@@ -16,7 +16,7 @@ const cliToApiMaps = [
   { cli: '-Zdy', api: 'dynamicModels', type: 'number' },
   { cli: '-Zco', api: 'contextBits', type: 'number' },
   { cli: '-S', api: 'sparseSelectors', type: 'array' }
-]
+];
 
 rl.question('How many seconds should RoadRoller spend looking for the best config? ', seconds => {
   console.log('Building...');
@@ -33,13 +33,13 @@ rl.question('How many seconds should RoadRoller spend looking for the best confi
           if (singleParam.startsWith(mapper.cli) && mapper.type !== 'unused') {
             bestConfigJs[mapper.api] = convertValue(mapper, singleParam);
           }
-        })
+        });
       });
       fs.writeFileSync(`${__dirname}/roadroller-config.json`, JSON.stringify(bestConfigJs, null, 2));
       console.log(`BEST CONFIG: ${bestConfigConsole}`);
       process.exit(0);
     });
-  })
+  });
 });
 
 function convertValue(mapper, cliSetting) {

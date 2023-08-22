@@ -7,3 +7,18 @@ Become the most successful merchant in the kingdom!
 Market Street Tycoon is a game about building up a successful business in mediaeval Europe, starting as a small street stand and evolving by increasing product selection, improving the stand location, and maybe upgrading to a physical shop.
 
 🚧 Under construction
+
+## Development
+
+Install dependencies
+
+```sh
+sudo apt install default-jre # Needed to run roadroller
+yarn
+```
+
+Run development
+
+```sh
+yarn dev
+```
