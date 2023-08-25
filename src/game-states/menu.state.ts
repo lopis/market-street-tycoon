@@ -16,11 +16,14 @@ class MenuState implements State {
   private isStartSelected = true;
 
   onUpdate() {
-    const xCenter = drawEngine.context.canvas.width / 2;
-    // drawEngine.drawText('🥨 Market Street Tycoon 🥨', 10, xCenter, 40);
-    // drawEngine.drawText('Start', 10, xCenter, 60, this.isStartSelected ? 'white' : 'gray');
-    // drawEngine.drawText('Toggle Fullscreen', 10, xCenter, 70, this.isStartSelected ? 'gray' : 'white');
-    drawEngine.drawTextPixelated('Test test', 10);
+    drawEngine.drawBrickWall();
+
+    drawEngine.drawOverlay();
+    
+    drawEngine.drawText('Market Street Tycoon', 10, 10, 40);
+    drawEngine.drawText('Start', 10, 10, 60, this.isStartSelected ? 'white' : 'gray');
+    drawEngine.drawText('Toggle Fullscreen', 10, 10, 70, this.isStartSelected ? 'gray' : 'white');
+
     this.updateControls();
   }
 

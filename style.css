@@ -3,12 +3,13 @@
     height: 100vmin;
     position: absolute;
     image-rendering: pixelated; /* You definitely want this if you are doing pixel art */
+    background-color: black;
 }
 
 /* Get rid of any margins, set background black, use flexbox to center */
 html, body {
     margin: 0;
-    background-color: black;
+    background-color: #111;
     display: flex;
     justify-content: center;
     align-items: center;
