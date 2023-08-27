@@ -17,7 +17,6 @@ class MenuState implements State {
 
   onUpdate() {
     drawEngine.drawBrickWall();
-
     drawEngine.drawOverlay();
     
     drawEngine.drawText('Market Street Tycoon', 10, 10, 40);

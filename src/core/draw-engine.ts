@@ -1,3 +1,6 @@
+export const HEIGHT = 144;
+export const WIDTH = 160;
+
 class DrawEngine {
   //   context.strokeStyle = 'black';
   //   context.lineWidth = 4;
@@ -12,16 +15,8 @@ class DrawEngine {
   constructor() {
     this.context = c2d.getContext('2d');
     this.fontContext = f.getContext('2d');
-    this.context.canvas.height = 144;
-    this.context.canvas.width = 160;
-  }
-
-  get canvasWidth() {
-    return this.context.canvas.width;
-  }
-
-  get canvasHeight() {
-    return this.context.canvas.height;
+    this.context.canvas.height = HEIGHT;
+    this.context.canvas.width = WIDTH;
   }
 
   clearFontContext() {
@@ -30,7 +25,7 @@ class DrawEngine {
   
   clear() {
     this.clearFontContext();
-    this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+    this.context.clearRect(0, 0, WIDTH, HEIGHT);
   }
 
   // drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign: 'center' | 'left' | 'right' = 'center') {
@@ -55,7 +50,7 @@ class DrawEngine {
     this.fontContext.font=font;
     this.fontContext.textBaseline="middle";
     this.fontContext.textAlign = textAlign;
-    const offset = textAlign == 'center' ? 125 : 0;
+    const offset = textAlign == 'center' ? 125 : textAlign == 'right' ? 250 : 0;
     this.fontContext.fillText(text, offset, fontSize/2);
     const I = this.fontContext.getImageData(0,0,250,32);
     for (let i=0;i<250;i++){
@@ -75,7 +70,7 @@ class DrawEngine {
 
   drawOverlay() {
     this.context.fillStyle = "#00000099";
-    this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+    this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
   drawBrick(x: number, y: number, width: number, height: number) {
@@ -101,8 +96,8 @@ class DrawEngine {
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
     const width = text.length * 10;
-    this.context.strokeRect(x, y, width, 13);
-    this.drawText(text, 10, x + width/2, y + 2, color, 'center');
+    this.context.strokeRect(x - width/2, y, width, 13);
+    this.drawText(text, 10, x, y + 2, color, 'center');
   }
 }
 
