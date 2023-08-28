@@ -3,13 +3,13 @@ import { PALETTE } from "./icons";
 export const HEIGHT = 144;
 export const WIDTH = 160;
 
-export const RED = '#c3472c',
+export const RED1 = '#c3472c',
+RED2 = '#752a1a',
 WHITE2 = '#f7cebd',
 BROWN1 = '#b77e62',
 BROWN2 = '#6d412e',
 GRAY = '#7d736e',
 BLACK = '#3f2e28';
-
 
 class DrawEngine {
   //   context.strokeStyle = 'black';
@@ -120,19 +120,35 @@ class DrawEngine {
     this.context.fillRect(0, 90, WIDTH, 54);
   }
 
+  gradient(x0: number, y0: number, x1: number, y1: number, stops: Array<Array<any>>) {
+    let gradient = this.context.createLinearGradient(x0, y0, x1, y1);
+    stops.forEach(([offset, color], index) => {
+      if (index != 0) {
+        gradient.addColorStop(stops[index-1][0], color);
+      }
+      gradient.addColorStop(offset, color);
+    });
+
+    return gradient;
+  }
+
   drawTent() {
     // sticks
-    this.context.beginPath();
-    this.context.fillStyle = BROWN1;
-    this.context.rect(30, 23, 8, 85);
-    this.context.rect(WIDTH - 38, 23, 8, 85);
-    this.context.rect(18, 23, WIDTH - 36, 4);
-    this.context.fill();
+    this.context.fillStyle = this.gradient(30, 0, 38, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);;
+    this.context.fillRect(30, 23, 8, 85);
+    this.context.fillStyle = this.gradient(WIDTH - 38, 0, WIDTH - 30, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);;
+    this.context.fillRect(WIDTH - 38, 23, 8, 85);
+    this.context.fillStyle = this.gradient(0, 23, 0, 27, [[1/4, BROWN2], [3/4, BROWN1], [1, BROWN2]]);;
+    this.context.fillRect(18, 23, WIDTH - 36, 4);
 
     // red and white cloth
     for (let i = 0; i < 7 ; i++) {
       this.context.beginPath();
-      this.context.fillStyle = i % 2 ? WHITE2 : RED;
+      this.context.fillStyle = i % 2 ? BROWN1 : RED2;
+      this.drawCircle(32 + i * 16, 32, 8);
+      this.context.fill();
+      this.context.beginPath();
+      this.context.fillStyle = i % 2 ? WHITE2 : RED1;
       this.drawCircle(32 + i * 16, 30, 8);
       this.context.rect(24 + i * 16, 22, 16, 8);
       this.context.fill();
