@@ -1,9 +1,9 @@
 import { drawEngine } from './core/draw-engine';
-import { menuState } from './game-states/menu.state';
 import { createGameStateMachine, gameStateMachine } from './game-state-machine';
 import { controls } from '@/core/controls';
+import { gameState } from './game-states/game.state';
 
-createGameStateMachine(menuState);
+createGameStateMachine(gameState); //menuState
 
 let previousTime = 0;
 const interval = 1000 / 60;

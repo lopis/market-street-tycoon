@@ -4,7 +4,7 @@ const products = <const> [
   'olives'
 ];
 
-type ProductType = typeof products[number]
+export type ProductType = typeof products[number]
 
 type Supplier = {
   product: ProductType

@@ -1,15 +1,13 @@
 import { controls } from '@/core/controls';
 import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { trigger } from '@/core/events';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
-// import { drawEngine } from '@/core/draw-engine';
-// import { controls } from '@/core/controls';
-// import { gameStateMachine } from '@/game-state-machine';
-// import { menuState } from '@/game-states/menu.state';
 
 class BuyState implements State {
   gameData: GameData;
   selectedSupplier: number = 0;
+  onLeave?: Function | undefined;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -72,8 +70,13 @@ class BuyState implements State {
         && supplier.price <= this.gameData.money
       ) {
         this.gameData.money -= supplier.price;
-        supplier.stock = 0;
-        this.gameData.stock[supplier.product] = (this.gameData.stock[supplier.product] ?? 0) + supplier.stock;
+        // @ts-ignore
+        this.gameData.stock[supplier.product] += supplier.stock;
+        supplier.stock = 0;        
+      }
+
+      if (this.selectedSupplier == this.gameData.suppliers.length) {
+        trigger('next');
       }
     }
   }

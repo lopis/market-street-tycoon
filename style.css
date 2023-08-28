@@ -1,6 +1,6 @@
 #c2d {
-    width: 100vmin;
-    height: 100vmin;
+    height: 100vh;
+    aspect-ratio: 160 / 144;
     position: absolute;
     image-rendering: pixelated; /* You definitely want this if you are doing pixel art */
     background-color: black;

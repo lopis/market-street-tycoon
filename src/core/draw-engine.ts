@@ -1,5 +1,15 @@
+import { PALETTE } from "./icons";
+
 export const HEIGHT = 144;
 export const WIDTH = 160;
+
+export const RED = '#c3472c',
+WHITE2 = '#f7cebd',
+BROWN1 = '#b77e62',
+BROWN2 = '#6d412e',
+GRAY = '#7d736e',
+BLACK = '#3f2e28';
+
 
 class DrawEngine {
   //   context.strokeStyle = 'black';
@@ -73,10 +83,26 @@ class DrawEngine {
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
+  drawCircle(xc: number, yc: number, radius: number) {
+    let x = radius, y = 0, cd = 0;
+
+    // middle line
+    this.context.rect(xc - x, yc, radius<<1, 1);
+  
+    while (x > y) {
+      cd -= (--x) - (++y);
+      if (cd < 0) cd += x++;
+      this.context.rect(xc - y, yc - x, y<<1, 1);    // upper 1/4
+      this.context.rect(xc - x, yc - y, x<<1, 1);    // upper 2/4
+      this.context.rect(xc - x, yc + y, x<<1, 1);    // lower 3/4
+      this.context.rect(xc - y, yc + x, y<<1, 1);    // lower 4/4
+    }
+  }
+
   drawBrick(x: number, y: number, width: number, height: number) {
 
-    this.context.strokeStyle = "#40312a";
-    this.context.fillStyle = "#807672";
+    this.context.strokeStyle = BLACK;
+    this.context.fillStyle = GRAY;
     this.context.fillRect(x, y, width, height);
     this.context.strokeRect(x + 1, y + 1, width - 1, height - 1);
   }
@@ -87,8 +113,50 @@ class DrawEngine {
     for (let row = 0; row <= 10; row++) {
       for (let col = 0; col <= 6; col++) {
         const offset = row % 2 ? width - 8 : width * 0.5 - 8;
-        this.drawBrick(col * width - offset, row * height - 8, width, height);
+        this.drawBrick(col * width - offset, row * height - 5, width, height);
       }
+    }
+    this.context.fillStyle = "#40312a";
+    this.context.fillRect(0, 90, WIDTH, 54);
+  }
+
+  drawTent() {
+    // sticks
+    this.context.beginPath();
+    this.context.fillStyle = BROWN1;
+    this.context.rect(30, 23, 8, 85);
+    this.context.rect(WIDTH - 38, 23, 8, 85);
+    this.context.rect(18, 23, WIDTH - 36, 4);
+    this.context.fill();
+
+    // red and white cloth
+    for (let i = 0; i < 7 ; i++) {
+      this.context.beginPath();
+      this.context.fillStyle = i % 2 ? WHITE2 : RED;
+      this.drawCircle(32 + i * 16, 30, 8);
+      this.context.rect(24 + i * 16, 22, 16, 8);
+      this.context.fill();
+    }
+  }
+
+  drawBoxes() {
+    for (let i = 0; i < 3 ; i++) {
+      const width = 30;
+      const offset = (WIDTH - 3 * width) / 2;
+
+      // backdrop
+      this.context.fillStyle = BROWN2;
+      this.context.fillRect(offset + i * width, 76, width, 36);
+
+      // front planks
+      this.context.fillStyle = BROWN1;
+      this.context.fillRect(offset + i * width + 1, 100, width - 2, 3);
+      this.context.fillRect(offset + i * width + 1, 104, width - 2, 3);
+      this.context.fillRect(offset + i * width + 1, 108, width - 2, 3);
+
+      // inside
+      this.context.fillStyle = BLACK;
+      this.context.fillRect(offset + i * width + 1, 77, width - 2, 22);
     }
   }
 
@@ -98,6 +166,35 @@ class DrawEngine {
     const width = text.length * 10;
     this.context.strokeRect(x - width/2, y, width, 13);
     this.drawText(text, 10, x, y + 2, color, 'center');
+  }
+
+  // Adapted from https://xem.github.io/miniPixelArt/
+  drawIcon(icon: string, x: number, y: number) {
+    const size = 8;
+    const imageData: number[] = [];
+    
+    // pixel decoding
+    icon.replace(
+      /./g,
+      // @ts-ignore - we don't care about returning a value from this.
+      a => {
+        // @ts-ignore
+        const z = a.charCodeAt();
+        imageData.push(z&7);
+        imageData.push((z>>3)&7);
+      }
+    );
+
+    // drawing
+    for (let j = 0; j < size; j++) {
+      for (let i = 0; i < size; i++) {
+        if (imageData[j * size + i]) {
+          const index = 3 * (imageData[j * size + i]-1);
+          this.context.fillStyle = "#" + PALETTE.substring(index, index + 3);
+          this.context.fillRect(x + i, y + j, 1, 1);
+        }
+      }
+    }
   }
 }
 
