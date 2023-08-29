@@ -1,4 +1,4 @@
-import { PALETTE } from "./icons";
+import { Icon, PALETTE } from "./icons";
 
 export const HEIGHT = 144;
 export const WIDTH = 160;
@@ -151,7 +151,7 @@ class DrawEngine {
       this.context.fillStyle = i % 2 ? WHITE2 : RED1;
       this.drawCircle(32 + i * 16, 30, 8);
       this.context.rect(24 + i * 16, 22, 16, 8);
-      this.context.fill();
+      this.context.fill();  
     }
   }
 
@@ -185,12 +185,11 @@ class DrawEngine {
   }
 
   // Adapted from https://xem.github.io/miniPixelArt/
-  drawIcon(icon: string, x: number, y: number) {
-    const size = 8;
+  drawIcon(icon: Icon, x: number, y: number) {
     const imageData: number[] = [];
     
     // pixel decoding
-    icon.replace(
+    icon.data.replace(
       /./g,
       // @ts-ignore - we don't care about returning a value from this.
       a => {
@@ -202,10 +201,10 @@ class DrawEngine {
     );
 
     // drawing
-    for (let j = 0; j < size; j++) {
-      for (let i = 0; i < size; i++) {
-        if (imageData[j * size + i]) {
-          const index = 3 * (imageData[j * size + i]-1);
+    for (let j = 0; j < icon.size; j++) {
+      for (let i = 0; i < icon.size; i++) {
+        if (imageData[j * icon.size + i]) {
+          const index = 3 * (imageData[j * icon.size + i]-1);
           this.context.fillStyle = "#" + PALETTE.substring(index, index + 3);
           this.context.fillRect(x + i, y + j, 1, 1);
         }

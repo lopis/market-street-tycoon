@@ -1,7 +1,7 @@
 const products = <const> [
   'apples',
   'bread',
-  'olives'
+  'oil'
 ];
 
 export type ProductType = typeof products[number]
@@ -46,7 +46,7 @@ class GameData {
 
   constructor() {
     products.forEach(product => {
-      this.stock[product] = 0;
+      this.stock[product] = 30;
     });
 
     this.money = 2;
