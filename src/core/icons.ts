@@ -21,21 +21,21 @@ export type Icon = {
 
 export const icons: {[Property in ProductType]: Icon} = {
   apples: {
-    data: "@@@@@@C@@X@@PZj@PRR@xRz@@G@@@@@",
-    size: 8,
+    data: "@X@@C@RSERRBWRGx@",
+    size: 6,
     spacing: 6,
     offset: 0,
   },
   bread: {
-    data: "@@@@@@@@@@@mmm@h}}mEhmooExmmmG@mmm@@om}@@@@@@@@",
-    size: 10,
+    data: "hmmEmoomm}}momm}hmmExmmGxG@@@@",
+    size: 8,
     spacing: 9,
-    offset: 0,
+    offset: -1,
   },
   oil: {
-    data: "@@@@@@@@@@@hmE@@@m@@@@[@@@[[[@@[[[@@_[{@@@@@@@@",
-    size: 10,
+    data: "@mm@@m@@XC@[[[X[[C_[{xG",
+    size: 7,
     spacing: 9,
-    offset: 0,
+    offset: -1,
   },
 };

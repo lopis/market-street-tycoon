@@ -23,7 +23,7 @@ class MarketState implements State {
         let rowOffset = icon.spacing < 7 ? (Math.floor(j/perRow) % 2) * icon.spacing/2 : 0;
         drawEngine.drawIcon(
           icon,
-          36 + (j % perRow) * icon.spacing + i * 30 + rowOffset,
+          37 + (j % perRow) * icon.spacing + i * 30 + rowOffset,
           73 + Math.floor(j / perRow) * (icon.spacing-1) - icon.offset,
         );
       }
