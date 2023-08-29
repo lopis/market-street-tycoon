@@ -32,8 +32,8 @@ class GameState implements State {
     on('next', () => this.next());
   }
 
-  onUpdate() {
-    this.playStateMachine.getState().onUpdate();
+  onUpdate(timeElapsed?: number) {
+    this.playStateMachine.getState().onUpdate(timeElapsed);
   }
 }
 

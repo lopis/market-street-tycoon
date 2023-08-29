@@ -15,27 +15,27 @@ export const PALETTE = [
 export type Icon = {
   data: string
   size: number
-  spacing: number // size + padding
-  offset: number
+  padding: number // size + padding
+  y: number
 }
 
 export const icons: {[Property in ProductType]: Icon} = {
   apples: {
     data: "@X@@C@RSERRBWRGx@",
     size: 6,
-    spacing: 6,
-    offset: 0,
+    padding: 6,
+    y: 0,
   },
   bread: {
     data: "hmmEmoomm}}momm}hmmExmmGxG@@@@",
     size: 8,
-    spacing: 9,
-    offset: -1,
+    padding: 9,
+    y: -1,
   },
   oil: {
     data: "@mm@@m@@XC@[[[X[[C_[{xG",
     size: 7,
-    spacing: 9,
-    offset: -1,
+    padding: 9,
+    y: -1,
   },
 };

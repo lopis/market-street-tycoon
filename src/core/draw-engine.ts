@@ -1,3 +1,4 @@
+import GameData from "./game-data";
 import { Icon, PALETTE } from "./icons";
 
 export const HEIGHT = 144;
@@ -210,6 +211,16 @@ class DrawEngine {
         }
       }
     }
+  }
+
+  drawState(data: GameData) {
+    const width = 50;
+    const margin = 3;
+    this.context.fillStyle = WHITE2;
+    this.context.fillRect(margin, margin, width, 12);
+    this.context.fillRect(WIDTH - margin - width, margin, width, 12);
+    this.drawText(`Week ${data.week}`, 10, margin + 2, margin + 2, BLACK);
+    this.drawText(`${data.money}$`, 10, WIDTH - margin - 2, margin + 2, BLACK, 'right');
   }
 }
 

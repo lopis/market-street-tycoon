@@ -22,7 +22,7 @@ class BuyState implements State {
     drawEngine.drawBrickWall();
     drawEngine.drawOverlay();
 
-    drawEngine.drawText('Suppliers', 10, 1, 1, 'indianred');
+    drawEngine.drawText(`Week ${this.gameData.week} - Suppliers`, 10, 1, 1, 'indianred');
     drawEngine.drawText(`${this.gameData.money}$`, 10, WIDTH, 1, 'green', 'right');
 
     this.gameData.suppliers
