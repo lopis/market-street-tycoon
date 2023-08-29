@@ -18,7 +18,7 @@ class MarketState implements State {
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.spacing);
-      const max = perRow * Math.ceil(25 / icon.spacing);
+      const max = Math.min(stock, perRow * Math.ceil(25 / icon.spacing));
       for(let j = 0; j < max; j++) {
         let rowOffset = icon.spacing < 7 ? (Math.floor(j/perRow) % 2) * icon.spacing/2 : 0;
         drawEngine.drawIcon(
