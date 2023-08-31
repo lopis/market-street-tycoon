@@ -24,6 +24,9 @@ class DrawEngine {
   context: CanvasRenderingContext2D;
   fontContext: CanvasRenderingContext2D;
 
+  fps: number = 60;
+  time: number = 0;
+
   constructor() {
     this.context = c2d.getContext('2d');
     this.fontContext = f.getContext('2d');
@@ -233,7 +236,7 @@ class DrawEngine {
     const yDiff = 20;
     const yBase = 120;
     people.forEach(p => {
-      const y = yBase + p.height;
+      const y = yBase + p.height + Math.round(Math.sin(p.step / 2));
       const x = Math.round(p.step);
       this.drawCircle(x + xDiff, y, 10, 0.7);
       this.drawCircle(x, y + yDiff, 15, 0.7);
@@ -245,6 +248,13 @@ class DrawEngine {
       }
     });
     this.context.fill();
+  }
+
+  drawFPS() {
+    const diff = performance.now() - this.time;
+    this.time = performance.now();
+    this.fps = 0.99 * this.fps + 0.01 * (1000 / diff);
+    this.context.fillText(`${Math.round(this.fps)}`, 10, HEIGHT - 10);
   }
 }
 

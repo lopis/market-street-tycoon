@@ -1,4 +1,4 @@
-import { WIDTH, drawEngine } from '@/core/draw-engine';
+import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { Icon, icons } from '@/core/icons';
 import { State } from '@/core/state';
@@ -21,7 +21,7 @@ class MarketState implements State {
       const p : Person = {
         height: Math.round(Math.random() * 10 - 5),
         step: Math.round(WIDTH * Math.random() * dir),
-        speed: Math.random() * dir,
+        speed: (Math.random() * 0.5 + 0.5) * dir,
       };
       this.people.push(p);
     }
@@ -47,6 +47,7 @@ class MarketState implements State {
     });
     drawEngine.drawState(this.gameData);
     drawEngine.drawPeople(this.people);
+    drawEngine.drawFPS();
   };
 }
 
