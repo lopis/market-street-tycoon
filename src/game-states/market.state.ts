@@ -1,13 +1,30 @@
-import { drawEngine } from '@/core/draw-engine';
+import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { Icon, icons } from '@/core/icons';
 import { State } from '@/core/state';
 
+export interface Person {
+  height: number
+  step: number
+  speed: number
+}
+
 class MarketState implements State {
   gameData: GameData;
+  people: Person[] = [];
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
+    let people = 20;
+    while(people--) {
+      const dir = Math.random() > 0.5 ? 1 : -1;
+      const p : Person = {
+        height: Math.round(Math.random() * 10 - 5),
+        step: Math.round(WIDTH * Math.random() * dir),
+        speed: Math.random() * dir,
+      };
+      this.people.push(p);
+    }
   }
 
   onUpdate() {
@@ -29,6 +46,7 @@ class MarketState implements State {
       }
     });
     drawEngine.drawState(this.gameData);
+    drawEngine.drawPeople(this.people);
   };
 }
 

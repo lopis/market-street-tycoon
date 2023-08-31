@@ -50,11 +50,11 @@ class GameData {
       this.stock[product] = 30;
     });
 
-    this.money = 2;
+    this.money = 20;
     const apple1: Supplier = {
       product: 'apples',
       name: nextName(),
-      price: 1,
+      price: 10,
       stock: 10,
     };
     this.suppliers.push(apple1);
@@ -62,7 +62,7 @@ class GameData {
     const apple2: Supplier = {
       product: 'apples',
       name: nextName(),
-      price: 2,
+      price: 20,
       stock: 24,
     };
     this.suppliers.push(apple2);

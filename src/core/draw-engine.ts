@@ -1,3 +1,4 @@
+import { Person } from "@/game-states/market.state";
 import GameData from "./game-data";
 import { Icon, PALETTE } from "./icons";
 
@@ -84,7 +85,7 @@ class DrawEngine {
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
-  drawCircle(xc: number, yc: number, radius: number) {
+  drawCircle(xc: number, yc: number, radius: number, skew: number = 0) {
     let x = radius, y = 0, cd = 0;
 
     // middle line
@@ -93,10 +94,12 @@ class DrawEngine {
     while (x > y) {
       cd -= (--x) - (++y);
       if (cd < 0) cd += x++;
-      this.context.rect(xc - y, yc - x, y<<1, 1);    // upper 1/4
-      this.context.rect(xc - x, yc - y, x<<1, 1);    // upper 2/4
-      this.context.rect(xc - x, yc + y, x<<1, 1);    // lower 3/4
-      this.context.rect(xc - y, yc + x, y<<1, 1);    // lower 4/4
+      let offset = Math.round(skew * x);
+      this.context.rect(xc - y + offset, yc - x, y<<1, 1);    // upper 1/4
+      this.context.rect(xc - y - offset, yc + x, y<<1, 1);    // lower 4/4
+      offset = Math.round(skew * y);
+      this.context.rect(xc - x + offset, yc - y, x<<1, 1);    // upper 2/4
+      this.context.rect(xc - x - offset, yc + y, x<<1, 1);    // lower 3/4
     }
   }
 
@@ -221,6 +224,27 @@ class DrawEngine {
     this.context.fillRect(WIDTH - margin - width, margin, width, 12);
     this.drawText(`Week ${data.week}`, 10, margin + 2, margin + 2, BLACK);
     this.drawText(`${data.money}$`, 10, WIDTH - margin - 2, margin + 2, BLACK, 'right');
+  }
+
+  drawPeople(people: Person[]) {
+    this.context.beginPath();
+    this.context.fillStyle = '#00000055';
+    const xDiff = 17;
+    const yDiff = 20;
+    const yBase = 120;
+    people.forEach(p => {
+      const y = yBase + p.height;
+      const x = Math.round(p.step);
+      this.drawCircle(x + xDiff, y, 10, 0.7);
+      this.drawCircle(x, y + yDiff, 15, 0.7);
+      p.step += p.speed;
+      if (p.step < -40) {
+        p.step = WIDTH+40;
+      } else if (p.step > WIDTH+40) {
+        p.step = -40;
+      }
+    });
+    this.context.fill();
   }
 }
 
