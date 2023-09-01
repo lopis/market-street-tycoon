@@ -1,6 +1,6 @@
 // https://xem.github.io/miniPixelArt/
 
-import { ProductType } from "./game-data";
+import { ProductType } from './game-data';
 
 export const PALETTE = [
   '000',
@@ -20,20 +20,20 @@ export type Icon = {
 }
 
 export const icons: {[Property in ProductType]: Icon} = {
-  apples: {
-    data: "@X@@C@RSERRBWRGx@",
+  'apples': {
+    data: '@X@@C@RSERRBWRGx@',
     size: 6,
     padding: 6,
     y: 0,
   },
-  bread: {
-    data: "hmmEmoomm}}momm}hmmExmmGxG@@@@",
+  'bread': {
+    data: 'hmmEmoomm}}momm}hmmExmmGxG@@@@',
     size: 8,
     padding: 9,
     y: -1,
   },
-  oil: {
-    data: "@mm@@m@@XC@[[[X[[C_[{xG",
+  'oil': {
+    data: '@mm@@m@@XC@[[[X[[C_[{xG',
     size: 7,
     padding: 9,
     y: -1,

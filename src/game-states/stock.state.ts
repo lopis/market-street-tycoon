@@ -23,8 +23,8 @@ class BuyState implements State {
     .forEach((supplier, index) => {
       const row = index * 24 + 24;
 
-      drawEngine.drawText(supplier.name, 10, 1, 1 + row, 'gray');
-      const productLine = `${supplier.stock} ${supplier.product}   ${supplier.price}$`;
+      drawEngine.drawText(supplier.supplierName, 10, 1, 1 + row, 'gray');
+      const productLine = `${supplier.stock} ${supplier.productName}   ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
         10, 1, row + 11, 'gray'
@@ -65,7 +65,7 @@ class BuyState implements State {
       ) {
         this.gameData.money -= supplier.price;
         // @ts-ignore
-        this.gameData.stock[supplier.product] += supplier.stock;
+        this.gameData.stock[supplier.productName] += supplier.stock;
         supplier.stock = 0;
       }
 

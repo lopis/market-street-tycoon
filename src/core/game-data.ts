@@ -7,13 +7,13 @@ const products = <const> [
 export type ProductType = typeof products[number]
 
 type Supplier = {
-  product: ProductType
-  name: string
+  productName: ProductType
+  supplierName: string
   price: number
   stock: number
 }
 
-let names = [
+const names = [
   'Catarina',
   'Leonor',
   'Bento',
@@ -33,35 +33,35 @@ let names = [
 ];
 
 const nextName = () => {
-  const name : string = names.pop() as string;
-  names.unshift(name);
+  const n : string = names.pop() as string;
+  names.unshift(n);
 
-  return name;
+  return n;
 };
 
 class GameData {
   suppliers: Supplier[] = [];
   money: number;
   stock: {[Property in ProductType]?: number} = {};
-  week: number = 1;
+  week = 1;
 
   constructor() {
-    products.forEach(product => {
-      this.stock[product] = 30;
+    products.forEach(p => {
+      this.stock[p] = 30;
     });
 
     this.money = 20;
     const apple1: Supplier = {
-      product: 'apples',
-      name: nextName(),
+      productName: 'apples',
+      supplierName: nextName(),
       price: 10,
       stock: 10,
     };
     this.suppliers.push(apple1);
 
     const apple2: Supplier = {
-      product: 'apples',
-      name: nextName(),
+      productName: 'apples',
+      supplierName: nextName(),
       price: 20,
       stock: 24,
     };
