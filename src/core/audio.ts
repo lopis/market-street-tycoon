@@ -29,7 +29,7 @@ const musicVolume = 0.3;
 const duration = 0.2;
 
 // Sound player
-export const playSound = (fn: Function) => {
+export const playSound = (fn: (i: number) => number) => {
   if (!a || !noise) return;
   const buffer = a.createBuffer(1,96e3,48e3);
   const data = buffer.getChannelData(0);
@@ -41,11 +41,11 @@ export const playSound = (fn: Function) => {
 };
 
 const noiseBuffer = () => {
-  var bufferSize = a.sampleRate * duration;
-  var buffer = a.createBuffer(1, bufferSize, a.sampleRate);
-  var output = buffer.getChannelData(0);
+  const bufferSize = a.sampleRate * duration;
+  const buffer = a.createBuffer(1, bufferSize, a.sampleRate);
+  const output = buffer.getChannelData(0);
 
-  for (var i = 0; i < bufferSize; i++) {
+  for (let i = 0; i < bufferSize; i++) {
     output[i] = Math.random() * 2 - 1;
   }
 
@@ -56,10 +56,9 @@ const playNote = (note: number, time: number, frequency: number) => {
   // notes.forEach((note, time) => {
     const osc = a.createOscillator();
     const gain = a.createGain();
-    const bandpass = new BiquadFilterNode(a, {
-      type: "bandpass",
-      frequency: 1200,
-    });
+    const bandpass = a.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.setValueAtTime(time, 1200);
     osc.type = 'sawtooth';
     osc.connect(gain);
     gain.connect(bandpass).connect(a.destination);
@@ -72,11 +71,10 @@ const playNote = (note: number, time: number, frequency: number) => {
     osc.frequency.value = frequency / 1.06 ** note;
 
     // the noise
-    noise = new AudioBufferSourceNode(a, {
-      buffer: noiseBuffer(),
-    });
+    noise = a.createBufferSource();
+    noise.buffer = noiseBuffer();
     const noiseFilter = a.createBiquadFilter();
-    noiseFilter.type = "bandpass";
+    noiseFilter.type = 'bandpass';
     noiseFilter.frequency.setValueAtTime(time, 500);
     const noiseGain = a.createGain();
     noiseGain.gain.setValueAtTime(0.01, time);
@@ -96,14 +94,14 @@ const playNote = (note: number, time: number, frequency: number) => {
   // })
 };
 
-const initNoise = () => {
-  const context = new AudioContext();
-  noise = new AudioBufferSourceNode(context, {
-    buffer: noiseBuffer(),
-  });
-  noise.connect(context.destination);
-  noise.start();
-};
+// const initNoise = () => {
+//   const context = new AudioContext();
+//   noise = new AudioBufferSourceNode(context, {
+//     buffer: noiseBuffer(),
+//   });
+//   noise.connect(context.destination);
+//   noise.start();
+// };
 
 const notes: number[] = [];
 [4, 6, 3, 7].forEach((baseNote, i) => {
@@ -122,10 +120,10 @@ const notes: number[] = [];
   }
 });
 
-let musicIsPlaying = true;
+const musicIsPlaying = true;
 let currentNoteIndex = 0;
 let startTime = 0;
-let baseFrequency = 440;
+const baseFrequency = 440;
 
 const scheduleNextNote = () => {
   if (!musicIsPlaying) return;

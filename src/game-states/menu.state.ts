@@ -3,7 +3,6 @@ import { drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { gameState } from './game.state';
-import { initAudio } from '@/core/audio';
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -19,7 +18,7 @@ class MenuState implements State {
   onUpdate() {
     drawEngine.drawBrickWall();
     drawEngine.drawOverlay();
-    
+
     drawEngine.drawText('Market Street Tycoon', 10, 10, 40);
     drawEngine.drawText('Start', 10, 10, 60, this.isStartSelected ? 'white' : 'gray');
     drawEngine.drawText('Toggle Fullscreen', 10, 10, 70, this.isStartSelected ? 'gray' : 'white');
@@ -36,7 +35,6 @@ class MenuState implements State {
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       if (this.isStartSelected) {
         gameStateMachine.setState(gameState);
-        initAudio();
       } else {
         toggleFullscreen();
       }

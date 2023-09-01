@@ -29,7 +29,6 @@ class GameState implements State {
 
   // Make sure ball starts at the same spot when game is entered
   onEnter() {
-    this.next();
     on('next', () => this.next());
   }
 

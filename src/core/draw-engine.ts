@@ -1,6 +1,6 @@
-import { Person } from "@/game-states/market.state";
-import GameData from "./game-data";
-import { Icon, PALETTE } from "./icons";
+import { Person } from '@/game-states/market.state';
+import GameData from './game-data';
+import { Icon, PALETTE } from './icons';
 
 export const HEIGHT = 144;
 export const WIDTH = 160;
@@ -24,10 +24,11 @@ class DrawEngine {
   context: CanvasRenderingContext2D;
   fontContext: CanvasRenderingContext2D;
 
-  fps: number = 60;
-  time: number = 0;
+  fps = 60;
+  time = 0;
 
   constructor() {
+    /* global c2d -- the canvas element */
     this.context = c2d.getContext('2d');
     this.fontContext = f.getContext('2d');
     this.context.canvas.height = HEIGHT;
@@ -37,7 +38,7 @@ class DrawEngine {
   clearFontContext() {
     this.fontContext.clearRect(0, 0, this.fontContext.canvas.width, this.fontContext.canvas.height);
   }
-  
+
   clear() {
     this.clearFontContext();
     this.context.clearRect(0, 0, WIDTH, HEIGHT);
@@ -59,11 +60,11 @@ class DrawEngine {
   drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left') {
     const font = `${fontSize}px sans`;
     const threshold = 80; //from 0 to 255
-  
+
     /* Compute and draw */
     this.clearFontContext();
     this.fontContext.font=font;
-    this.fontContext.textBaseline="middle";
+    this.fontContext.textBaseline='middle';
     this.fontContext.textAlign = textAlign;
     const offset = textAlign == 'center' ? 125 : textAlign == 'right' ? 250 : 0;
     this.fontContext.fillText(text, offset, fontSize/2);
@@ -84,16 +85,16 @@ class DrawEngine {
   }
 
   drawOverlay() {
-    this.context.fillStyle = "#00000099";
+    this.context.fillStyle = '#00000099';
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
-  drawCircle(xc: number, yc: number, radius: number, skew: number = 0) {
+  drawCircle(xc: number, yc: number, radius: number, skew = 0) {
     let x = radius, y = 0, cd = 0;
 
     // middle line
     this.context.rect(xc - x, yc, radius<<1, 1);
-  
+
     while (x > y) {
       cd -= (--x) - (++y);
       if (cd < 0) cd += x++;
@@ -123,12 +124,12 @@ class DrawEngine {
         this.drawBrick(col * width - offset, row * height - 5, width, height);
       }
     }
-    this.context.fillStyle = "#40312a";
+    this.context.fillStyle = '#40312a';
     this.context.fillRect(0, 90, WIDTH, 54);
   }
 
   gradient(x0: number, y0: number, x1: number, y1: number, stops: Array<Array<any>>) {
-    let gradient = this.context.createLinearGradient(x0, y0, x1, y1);
+    const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
     stops.forEach(([offset, color], index) => {
       if (index != 0) {
         gradient.addColorStop(stops[index-1][0], color);
@@ -141,11 +142,11 @@ class DrawEngine {
 
   drawTent() {
     // sticks
-    this.context.fillStyle = this.gradient(30, 0, 38, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);;
+    this.context.fillStyle = this.gradient(30, 0, 38, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);
     this.context.fillRect(30, 23, 8, 85);
-    this.context.fillStyle = this.gradient(WIDTH - 38, 0, WIDTH - 30, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);;
+    this.context.fillStyle = this.gradient(WIDTH - 38, 0, WIDTH - 30, 0, [[2/8, BROWN2], [6/8, BROWN1], [1, BROWN2]]);
     this.context.fillRect(WIDTH - 38, 23, 8, 85);
-    this.context.fillStyle = this.gradient(0, 23, 0, 27, [[1/4, BROWN2], [3/4, BROWN1], [1, BROWN2]]);;
+    this.context.fillStyle = this.gradient(0, 23, 0, 27, [[1/4, BROWN2], [3/4, BROWN1], [1, BROWN2]]);
     this.context.fillRect(18, 23, WIDTH - 36, 4);
 
     // red and white cloth
@@ -158,7 +159,7 @@ class DrawEngine {
       this.context.fillStyle = i % 2 ? WHITE2 : RED1;
       this.drawCircle(32 + i * 16, 30, 8);
       this.context.rect(24 + i * 16, 22, 16, 8);
-      this.context.fill();  
+      this.context.fill();
     }
   }
 
@@ -194,7 +195,7 @@ class DrawEngine {
   // Adapted from https://xem.github.io/miniPixelArt/
   drawIcon(icon: Icon, x: number, y: number) {
     const imageData: number[] = [];
-    
+
     // pixel decoding
     icon.data.replace(
       /./g,
@@ -212,7 +213,7 @@ class DrawEngine {
       for (let i = 0; i < icon.size; i++) {
         if (imageData[j * icon.size + i]) {
           const index = 3 * (imageData[j * icon.size + i]-1);
-          this.context.fillStyle = "#" + PALETTE.substring(index, index + 3);
+          this.context.fillStyle = '#' + PALETTE.substring(index, index + 3);
           this.context.fillRect(x + i, y + j, 1, 1);
         }
       }

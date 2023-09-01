@@ -2,14 +2,28 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    browser: true,
   },
   parser: '@typescript-eslint/parser',
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: "module"
+    sourceType: 'module'
   },
-  plugins: ['unused-imports', '@typescript-eslint'],
+  plugins: [
+    'unused-imports',
+    '@typescript-eslint'
+  ],
   rules: {
+    'quotes': ['error', 'single'],
+    'no-trailing-spaces': 'error',
+    'space-in-parens': ['error', 'never'],
+    'space-before-function-paren': ['error', 'never'],
+    'key-spacing': 'off',
+    '@typescript-eslint/key-spacing': 'error',
     'no-console': 'off',
     'no-debugger': 'off',
     'prefer-destructuring': 'off',
@@ -29,7 +43,6 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-bitwise': 'off',
     'no-plusplus': 'off',
-    'class-methods-use-this': 'warn',
     'linebreak-style': 0,
     'function-paren-newline': 'off',
     'unused-imports/no-unused-imports': 'warn',
@@ -48,6 +61,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
   overrides: [
     {
@@ -66,6 +80,6 @@ module.exports = {
     },
   },
   globals: {
-    f: "writable"
+    f: 'writable'
   }
 };

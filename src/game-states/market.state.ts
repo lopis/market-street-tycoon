@@ -1,4 +1,5 @@
-import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { initAudio } from '@/core/audio';
+import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { Icon, icons } from '@/core/icons';
 import { State } from '@/core/state';
@@ -27,6 +28,10 @@ class MarketState implements State {
     }
   }
 
+  onEnter() {
+    initAudio();
+  }
+
   onUpdate() {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
@@ -37,7 +42,7 @@ class MarketState implements State {
       const perRow = Math.floor(27 / icon.padding);
       const max = Math.min(stock, perRow * Math.ceil(25 / icon.padding));
       for(let j = 0; j < max; j++) {
-        let rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
+        const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
         drawEngine.drawIcon(
           icon,
           37 + (j % perRow) * icon.padding + i * 30 + rowOffset,
@@ -48,7 +53,7 @@ class MarketState implements State {
     drawEngine.drawState(this.gameData);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
-  };
+  }
 }
 
 export default MarketState;
