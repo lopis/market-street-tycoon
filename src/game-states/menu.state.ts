@@ -3,6 +3,7 @@ import { drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { gameState } from './game.state';
+import { initAudio } from '@/core/audio';
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -35,6 +36,7 @@ class MenuState implements State {
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       if (this.isStartSelected) {
         gameStateMachine.setState(gameState);
+        initAudio();
       } else {
         toggleFullscreen();
       }
