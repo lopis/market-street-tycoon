@@ -14,4 +14,68 @@ html, body {
     justify-content: center;
     align-items: center;
     height: 100%;
+    user-select: none;
+}
+
+
+
+@media (orientation: portrait) {
+    #c2d {
+        height: auto;
+        width: 100vw;
+    }
+}
+
+@media (max-width: 900px) {
+    #gamepad {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    b {
+        position: absolute;
+        display: inline-flex;
+        border: 2px solid;
+        border-radius: 7vw;
+        height: 7vw;
+        width: 7vw;
+        font-size: 3vw;
+        color: #4c4949;  
+        justify-content: center;
+        align-items: center;
+        font-family: monospace;  
+        transition: all 50ms ease-in-out;
+    }
+
+    b:active {
+        color: white;
+        transform: scale(1.5);
+    }
+
+    #up, #down {
+        left: 8vw;
+        bottom: 20vw;
+    }
+
+    #down {
+        bottom: 7vw;
+    }
+
+    #left, #right {
+        left: 1.5vw;
+        bottom: 13.5vw;
+    }
+
+    #right {
+        left: 14.5vw;
+    }
+
+    #ok {
+        right: 8vw;
+        bottom: 13.5vw;
+    }
+
 }
