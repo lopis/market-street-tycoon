@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Market Street Tycoon</title>
     <link rel="stylesheet" href="style.css"/>
 </head>
 <html>
 <body>
+    <div id="gamepad">
+        <b id="up">▲</b>
+        <b id="down">▼</b>
+        <b id="left">◀</b>
+        <b id="right">▶</b>
+        <b id="ok">OK</b>
+    </div>
     <canvas id="c2d"></canvas>
     <canvas hidden id=f width=250 height=20 style="border:1px solid"></canvas>
     <script type="module" src="/src/index.ts"></script>

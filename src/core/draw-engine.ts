@@ -255,7 +255,7 @@ class DrawEngine {
     const diff = performance.now() - this.time;
     this.time = performance.now();
     this.fps = 0.99 * this.fps + 0.01 * (1000 / diff);
-    this.context.fillText(`${Math.round(this.fps)}`, 10, HEIGHT - 10);
+    this.context.fillText(`${Math.round(this.fps)}FPS`, 10, HEIGHT - 10);
   }
 }
 
