@@ -31,10 +31,18 @@ class Controls {
 
   keyMap: Map<string, boolean> = new Map();
   touchKey = '';
-  previousState = { isUp: this.isUp, isDown: this.isDown, isConfirm: this.isConfirm, isEscape: this.isEscape };
+  previousState = {
+    isUp: this.isUp,
+    isDown: this.isDown,
+    isLeft: this.isLeft,
+    isRight: this.isRight,
+    isConfirm: this.isConfirm,
+    isEscape: this.isEscape
+  };
 
   constructor() {
-    document.addEventListener('keydown', event => this.toggleKey(event, true));
+    document.addEventListener('keydown',
+    event => this.toggleKey(event, true));
     document.addEventListener('keyup', event => this.toggleKey(event, false));
     this.inputDirection = new DOMPoint();
     document.addEventListener('touchstart', event => this.toggleVirtualKey(event, true));
@@ -44,6 +52,8 @@ class Controls {
   queryController() {
     this.previousState.isUp = this.isUp;
     this.previousState.isDown = this.isDown;
+    this.previousState.isLeft = this.isLeft;
+    this.previousState.isRight = this.isRight;
     this.previousState.isConfirm = this.isConfirm;
     this.previousState.isEscape = this.isEscape;
     const gamepad = navigator.getGamepads()[0];

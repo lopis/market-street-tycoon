@@ -1,6 +1,6 @@
 import { controls } from '@/core/controls';
 import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
-import GameData, { products } from '@/core/game-data';
+import GameData, { ProductType, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import MarketState from './market.state';
@@ -40,7 +40,7 @@ class StockState implements State {
         this.selection === index ? 'white' : 'gray',
         s
       ));
-      drawEngine.drawText('15$', 10, WIDTH - 33, row + 7, 'gray', 'center');
+      drawEngine.drawText(`${this.gameData.price[product]}$`, 10, WIDTH - 33, row + 7, 'gray', 'center');
     });
 
     drawEngine.drawButton(
@@ -55,6 +55,17 @@ class StockState implements State {
 
   updateControls() {
     controls.updateSelection(this);
+
+    const isLeft = controls.isLeft && !controls.previousState.isLeft;
+    const isRight = controls.isRight && !controls.previousState.isRight;
+    if((isLeft || isRight) && this.selection < Object.keys(this.gameData.stock).length) {
+      // @ts-ignore
+      const product: [ProductType, number] = Object.entries(this.gameData.stock)[this.selection];
+      if (product && this.gameData.price[product[0]] != undefined) {
+        // @ts-ignore
+        this.gameData.price[product[0]] = Math.max(0, this.gameData.price[product[0]] + (isLeft ? -1 : 1));
+      }
+    }
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       const supplier = this.gameData.suppliers[this.selection];

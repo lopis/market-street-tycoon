@@ -43,11 +43,13 @@ class GameData {
   suppliers: Supplier[] = [];
   money: number;
   stock: {[Property in ProductType]?: number} = {};
+  price: {[Property in ProductType]?: number} = {};
   week = 1;
 
   constructor() {
     products.forEach(p => {
       this.stock[p] = 30;
+      this.price[p] = 5;
     });
 
     this.money = 20;

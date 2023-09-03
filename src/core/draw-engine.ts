@@ -30,6 +30,9 @@ class DrawEngine {
   constructor() {
     /* global c2d -- the canvas element */
     this.context = c2d.getContext('2d');
+    c2d.addEventListener('click', () => {
+      alert(`Use the ${screen.width > 900 ? 'arrow keys and Enter' : 'game pad below'} to control the game.`);
+    }, { once: true });
     this.fontContext = f.getContext('2d');
     this.context.canvas.height = HEIGHT;
     this.context.canvas.width = WIDTH;
