@@ -18,6 +18,9 @@ html, body {
 }
 
 @media (max-width: 900px) {
+    body {
+        background: #f7cebd;
+    }
     #gamepad {
         position: fixed;
         top: 0;
@@ -34,7 +37,7 @@ html, body {
         height: 7vmax;
         width: 7vmax;
         font-size: 3vmax;
-        color: #4c4949;  
+        color: #3f2e28;  
         justify-content: center;
         align-items: center;
         font-family: monospace;  
@@ -42,8 +45,8 @@ html, body {
     }
 
     b:active {
-        color: white;
-        transform: scale(1.5);
+        color: #f7cebd;
+        transform: scale(1.2);
     }
 
     #up, #down {
@@ -80,5 +83,9 @@ html, body {
     #c2d {
         height: auto;
         width: 100vw;
+    }
+
+    #ok {
+        right: 7vmax;
     }
 }
