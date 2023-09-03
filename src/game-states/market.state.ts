@@ -1,4 +1,4 @@
-import { initAudio } from '@/core/audio';
+import { initAudio as initMarketMusic } from '@/core/audio';
 import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { Icon, icons } from '@/core/icons';
@@ -29,7 +29,7 @@ class MarketState implements State {
   }
 
   onEnter() {
-    initAudio();
+    initMarketMusic();
   }
 
   onUpdate() {

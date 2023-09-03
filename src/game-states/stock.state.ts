@@ -1,47 +1,52 @@
 import { controls } from '@/core/controls';
 import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
-import { trigger } from '@/core/events';
-import GameData from '@/core/game-data';
+import GameData, { products } from '@/core/game-data';
 import { State } from '@/core/state';
+import { playStateMachine } from '@/game-state-machine';
+import MarketState from './market.state';
 
-class BuyState implements State {
+class StockState implements State {
   gameData: GameData;
-  selectedSupplier = 0;
+  selection = 0;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
+  }
+
+  next() {
+    playStateMachine.setState(new MarketState(this.gameData));
   }
 
   onUpdate() {
     drawEngine.drawBrickWall();
     drawEngine.drawOverlay();
 
-    drawEngine.drawText(`Week ${this.gameData.week} - Suppliers`, 10, 1, 1, 'indianred');
+    drawEngine.drawText(`Week ${this.gameData.week} - Manage Stock`, 10, 1, 1, 'indianred');
     drawEngine.drawText(`${this.gameData.money}$`, 10, WIDTH, 1, 'green', 'right');
 
-    this.gameData.suppliers
-    .forEach((supplier, index) => {
+    products
+    .forEach((product, index) => {
       const row = index * 24 + 24;
+      const stock = this.gameData.stock[product];
 
-      drawEngine.drawText(supplier.supplierName, 10, 1, 1 + row, 'gray');
-      const productLine = `${supplier.stock} ${supplier.productName}   ${supplier.price}$`;
-      drawEngine.drawText(
-        supplier.stock ? productLine : 'soldout',
-        10, 1, row + 11, 'gray'
-      );
+      if (!stock) return;
 
-      drawEngine.drawButton(
-        WIDTH - 20,
+      drawEngine.drawText(product, 10, 1, 1 + row, 'gray');
+      drawEngine.drawText(`${stock}`, 10, 1, row + 11, 'gray');
+
+      ['-', '+'].map((s,i) => drawEngine.drawButton(
+        WIDTH - 60 + i*53,
         row + 5,
-        this.selectedSupplier === index ? 'white' : 'gray',
-        'BUY'
-      );
+        this.selection === index ? 'white' : 'gray',
+        s
+      ));
+      drawEngine.drawText('15$', 10, WIDTH - 33, row + 7, 'gray', 'center');
     });
 
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
-      this.selectedSupplier === this.gameData.suppliers.length ? 'white' : 'gray',
+      this.selection === this.gameData.suppliers.length ? 'white' : 'gray',
       'next'
     );
 
@@ -49,15 +54,10 @@ class BuyState implements State {
   }
 
   updateControls() {
-    if (controls.isUp && !controls.previousState.isUp && this.selectedSupplier > 0) {
-      this.selectedSupplier--;
-    }
-    if (controls.isDown && !controls.previousState.isDown && this.selectedSupplier < this.gameData.suppliers.length) {
-      this.selectedSupplier++;
-    }
+    controls.updateSelection(this);
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      const supplier = this.gameData.suppliers[this.selectedSupplier];
+      const supplier = this.gameData.suppliers[this.selection];
       if (
         supplier &&
         supplier.stock > 0
@@ -69,11 +69,11 @@ class BuyState implements State {
         supplier.stock = 0;
       }
 
-      if (this.selectedSupplier == this.gameData.suppliers.length) {
-        trigger('next');
+      if (this.selection == this.gameData.suppliers.length) {
+        this.next();
       }
     }
   }
 }
 
-export default BuyState;
+export default StockState;

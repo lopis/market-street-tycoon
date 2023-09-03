@@ -1,3 +1,6 @@
+import BuyState from '@/game-states/stock.state';
+import StockState from '@/game-states/stock.state';
+
 const enum XboxControllerButton {
   A,
   B,
@@ -103,6 +106,15 @@ class Controls {
       this.touchKey = '';
     } else if (id) {
       this.touchKey = id;
+    }
+  }
+
+  updateSelection(state: BuyState | StockState) {
+    if (this.isUp && !this.previousState.isUp && state.selection > 0) {
+      state.selection--;
+    }
+    if (this.isDown && !this.previousState.isDown && state.selection < state.gameData.suppliers.length) {
+      state.selection++;
     }
   }
 }

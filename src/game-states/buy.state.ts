@@ -3,6 +3,8 @@ import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
 import { trigger } from '@/core/events';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
+import { playStateMachine } from '@/game-state-machine';
+import StockState from './stock.state';
 
 class BuyState implements State {
   gameData: GameData;
@@ -10,6 +12,10 @@ class BuyState implements State {
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
+  }
+
+  next() {
+    playStateMachine.setState(new StockState(this.gameData));
   }
 
   onUpdate() {
@@ -70,7 +76,7 @@ class BuyState implements State {
       }
 
       if (this.selectedSupplier == this.gameData.suppliers.length) {
-        trigger('next');
+        this.next()
       }
     }
   }

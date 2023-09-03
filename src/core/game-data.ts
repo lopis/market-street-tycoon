@@ -1,4 +1,4 @@
-const products = <const> [
+export const products = <const> [
   'apples',
   'bread',
   'oil'
