@@ -36,9 +36,7 @@ class MarketState implements State {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
-    console.log(this.gameData.stock);
     Object.entries(this.gameData.stock).forEach(([type, stock], i) => {
-      console.log(type, stock);
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);

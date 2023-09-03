@@ -22,3 +22,7 @@ Run development
 ```sh
 yarn dev
 ```
+
+## Credits
+
+Music adapted from https://musescore.com/user/26822/scores/44875

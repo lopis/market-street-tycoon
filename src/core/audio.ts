@@ -26,7 +26,8 @@
 let a: AudioContext;
 let noise: AudioBufferSourceNode | null;
 const musicVolume = 0.3;
-const duration = 0.2;
+const noiseVolume = 0.3;
+const duration = 0.3;
 
 // Sound player
 export const playSound = (fn: (i: number) => number) => {
@@ -52,46 +53,44 @@ const noiseBuffer = () => {
   return buffer;
 };
 
-const playNote = (note: number, time: number, frequency: number) => {
-  // notes.forEach((note, time) => {
-    const osc = a.createOscillator();
-    const gain = a.createGain();
-    const bandpass = a.createBiquadFilter();
-    bandpass.type = 'bandpass';
-    bandpass.frequency.setValueAtTime(time, 1200);
-    osc.type = 'sawtooth';
-    osc.connect(gain);
-    gain.connect(bandpass).connect(a.destination);
-    gain.gain.setValueAtTime(0.01, time);
-    let gap = 0.8;
-    gain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
-    gain.gain.setValueAtTime(musicVolume, time + duration*gap);
-    gain.gain.setValueAtTime(musicVolume, time + duration*(1.5 - gap));
-    gain.gain.linearRampToValueAtTime(0.01, time + duration*1.45);
-    osc.frequency.value = frequency / 1.06 ** note;
+const playNote = (note: number, time: number) => {
+  const osc = a.createOscillator();
+  const gain = a.createGain();
+  const bandpass = a.createBiquadFilter();
+  bandpass.type = 'bandpass';
+  bandpass.frequency.setValueAtTime(800, time);
+  osc.type = 'square';
+  osc.connect(gain);
+  gain.connect(bandpass).connect(a.destination);
+  gain.gain.setValueAtTime(0.01, time);
+  let gap = 0.8;
+  gain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
+  gain.gain.setValueAtTime(musicVolume, time + duration*gap);
+  gain.gain.setValueAtTime(musicVolume, time + duration*(1.5 - gap));
+  gain.gain.linearRampToValueAtTime(0.01, time + duration*1.5);
+  const frequency = 440 / 1.06 ** note;
+  osc.frequency.setValueAtTime(frequency, time);
 
-    // the noise
-    noise = a.createBufferSource();
-    noise.buffer = noiseBuffer();
-    const noiseFilter = a.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(time, 500);
-    const noiseGain = a.createGain();
-    noiseGain.gain.setValueAtTime(0.01, time);
-    gap = 0.47;
-    noiseGain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
-    noiseGain.gain.setValueAtTime(musicVolume, time + duration*gap);
-    noiseGain.gain.setValueAtTime(musicVolume, time + duration*(0.9 - gap));
-    noiseGain.gain.linearRampToValueAtTime(0.01, time + duration*1);
-    noise
-    .connect(noiseFilter)
-    .connect(noiseGain)
-    .connect(a.destination);
-    noise.start();
+  // the noise
+  noise = a.createBufferSource();
+  noise.buffer = noiseBuffer();
+  const noiseFilter = a.createBiquadFilter();
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.setValueAtTime(500, time);
+  const noiseGain = a.createGain();
+  noiseGain.gain.setValueAtTime(0.01, time);
+  gap = 0.47;
+  noiseGain.gain.exponentialRampToValueAtTime(noiseVolume, time + duration*gap);
+  noiseGain.gain.setValueAtTime(noiseVolume, time + duration*(0.9 - gap));
+  noiseGain.gain.exponentialRampToValueAtTime(0.01, time + duration*1);
+  noise
+  .connect(noiseFilter)
+  .connect(noiseGain)
+  .connect(a.destination);
+  noise.start();
 
-    osc.start(time);
-    osc.stop(time + duration*1.5);
-  // })
+  osc.start(time);
+  osc.stop(time + duration*1.5);
 };
 
 // const initNoise = () => {
@@ -104,31 +103,43 @@ const playNote = (note: number, time: number, frequency: number) => {
 // };
 
 const notes: number[] = [];
-[4, 6, 3, 7].forEach((baseNote, i) => {
-  let loops = 8;
-  while (loops) {
-    if (i == 3 && loops < 5) {
-      if (loops < 4) {
-        notes.push(99, 99);
-      } else if (loops < 5) {
-        notes.push(baseNote, 99);
-      }
-    } else {
-      notes.push(baseNote, baseNote - 4);
-    }
-    loops--;
-  }
+
+// Notes are sequencial, but include the
+// middle notes (e.g. piano black keys)
+const frequencies = {
+  'E': -5,
+  'F': -4,
+  'G': -2,
+  'a': 0,
+  'b': 2,
+  'c': 3,
+  'd': 5,
+  'e': 7,
+  '-': -999,
+};
+
+('GddGdd' +
+'GccGcc' +
+'GeeGee' +
+'FddFdd' +
+'EaaGdd' +
+'Gddadd' +
+'Gddadd' +
+'GdbG--').split('').forEach((letter) => {
+  // @ts-ignore
+  const note = frequencies[letter];
+  notes.push(-note);
 });
 
 const musicIsPlaying = true;
 let currentNoteIndex = 0;
 let startTime = 0;
-const baseFrequency = 440;
 
 const scheduleNextNote = () => {
   if (!musicIsPlaying) return;
   if (startTime + currentNoteIndex * duration < a.currentTime) {
-    playNote(notes[currentNoteIndex], startTime + currentNoteIndex * duration, baseFrequency);
+    /** @ts-ignore */
+    playNote(notes[currentNoteIndex], startTime + currentNoteIndex * duration);
     currentNoteIndex++;
     if (currentNoteIndex == notes.length) {
       startTime = a.currentTime + duration;
