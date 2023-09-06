@@ -8,6 +8,7 @@ export const WIDTH = 160;
 
 export const RED1 = '#c3472c',
 RED2 = '#752a1a',
+WHITE1 = '#ffeae0',
 WHITE2 = '#f7cebd',
 BROWN1 = '#b77e62',
 BROWN2 = '#6d412e',
@@ -133,17 +134,22 @@ class DrawEngine {
   }
 
   drawCurtains(pos: number) {
-    const width = WIDTH / 8;
+    const width = WIDTH / 16;
     const height = HEIGHT / 4;
     let i = 4;
     while (i--) {
       let j = 4;
       while (j--) {
-        const offset = j % 2;
-        const p = Math.round(easeInOutSine(pos) * WIDTH);
-        this.context.fillStyle = i % 2 ? RED1 : RED2;
-        this.context.fillRect(i * width - p, j * height, width + offset, height);
-        this.context.fillRect(WIDTH - (i+1) * width + p, j * height, width + offset, height);
+        const p = Math.round(easeInOutSine(pos) * (WIDTH + 32 * j));
+        const y = j * height;
+        this.context.fillStyle = RED1;
+        const w1 = width * 1.7;
+        this.context.fillRect(i * width * 2 - p, y, w1, height);
+        this.context.fillRect(WIDTH - (i+1) * width * 2 + p, y, w1, height);
+        this.context.fillStyle = RED2;
+        const w2 = width * 0.3;
+        this.context.fillRect(WIDTH - (i+1) * width * 2 + w1 + p, y, w2, height);
+        this.context.fillRect(i * width * 2 - p + w1, y, w2, height);
       }
     }
   }
