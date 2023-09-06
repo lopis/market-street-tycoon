@@ -27,7 +27,6 @@ class StockState implements State {
       }
       return !!stock;
     });
-    console.log(this.products);
   }
 
   onUpdate(timeElapsed = 0) {

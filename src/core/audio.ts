@@ -135,13 +135,14 @@ const musicIsPlaying = true;
 let currentNoteIndex = 0;
 let startTime = 0;
 
-const scheduleNextNote = () => {
+const scheduleNextNote = (repeat = false) => {
   if (!musicIsPlaying) return;
   if (startTime + currentNoteIndex * duration < a.currentTime) {
     /** @ts-ignore */
     playNote(notes[currentNoteIndex], startTime + currentNoteIndex * duration);
     currentNoteIndex++;
     if (currentNoteIndex == notes.length) {
+      if (!repeat) return;
       startTime = a.currentTime + duration;
       currentNoteIndex = 0;
     }
@@ -150,14 +151,16 @@ const scheduleNextNote = () => {
   setTimeout(scheduleNextNote, 10);
 };
 
-const startMusicLoop = () => {
+const startMusicLoop = (repeat = false) => {
   a = new AudioContext();
   startTime = a.currentTime;
-  scheduleNextNote();
+  currentNoteIndex = 0;
+  startTime = 0;
+  scheduleNextNote(repeat);
 };
 
-export const initAudio = () => {
-  startMusicLoop();
+export const initAudio = (repeat = false) => {
+  startMusicLoop(repeat);
 };
 
 // export const toggleSoundEffects = () => {

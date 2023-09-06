@@ -4,6 +4,7 @@ import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import StockState from './stock.state';
+import { icons } from '@/core/icons';
 
 class BuyState implements State {
   gameData: GameData;
@@ -28,11 +29,13 @@ class BuyState implements State {
     .forEach((supplier, index) => {
       const row = index * 24 + 24;
 
-      drawEngine.drawText(supplier.supplierName, 10, 1, 1 + row, 'gray');
+      drawEngine.drawIcon(icons[supplier.productName], 3, row + 6);
+
+      drawEngine.drawText(supplier.supplierName, 10, 12, 1 + row, 'gray');
       const productLine = `${supplier.stock} ${supplier.productName}   ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
-        10, 1, row + 11, 'gray'
+        10, 12, row + 11, 'gray'
       );
 
       drawEngine.drawButton(

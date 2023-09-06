@@ -2,6 +2,8 @@ import { initAudio as initMarketMusic } from '@/core/audio';
 import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
+import { playStateMachine } from '@/game-state-machine';
+import BuyState from './buy.state';
 
 export const MARKET_TIME = 12000;
 
@@ -36,7 +38,6 @@ class MarketState implements State {
   }
 
   onUpdate(timeElapsed = 0) {
-    this.time += timeElapsed;
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
@@ -46,7 +47,18 @@ class MarketState implements State {
     drawEngine.drawFPS();
     drawEngine.drawClock(this.time);
 
-    if (this.curtainPos < 1) {
+    if (this.time < MARKET_TIME) {
+      this.time += timeElapsed;
+    }
+
+    if (this.time > MARKET_TIME) {
+      if (this.curtainPos > 0) {
+        this.curtainPos = Math.max(0, this.curtainPos - timeElapsed / 1000);
+        drawEngine.drawCurtains(this.curtainPos);
+      } else {
+        playStateMachine.setState(new BuyState(this.gameData));
+      }
+    } else if (this.curtainPos < 1) {
       this.curtainPos = Math.min(1, this.curtainPos + timeElapsed / 1000);
       drawEngine.drawCurtains(this.curtainPos);
     }

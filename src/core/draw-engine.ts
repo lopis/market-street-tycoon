@@ -32,9 +32,9 @@ class DrawEngine {
   constructor() {
     /* global c2d -- the canvas element */
     this.context = c2d.getContext('2d');
-    c2d.addEventListener('click', () => {
-      alert(`Use the ${screen.width > 900 ? 'arrow keys and Enter' : 'game pad below'} to control the game.`);
-    }, { once: true });
+    // c2d.addEventListener('click', () => {
+    //   alert(`Use the ${screen.width > 900 ? 'arrow keys and Enter' : 'game pad below'} to control the game.`);
+    // }, { once: true });
     this.fontContext = f.getContext('2d');
     this.context.canvas.height = HEIGHT;
     this.context.canvas.width = WIDTH;
@@ -104,7 +104,6 @@ class DrawEngine {
 
     const points = [ ];
     this.context.fillStyle = color;
-    debugger;
     while(dmax--) {
       points.push([x, y]);
       x += dx;
@@ -119,7 +118,7 @@ class DrawEngine {
   }
 
   drawOverlay() {
-    this.context.fillStyle = '#00000099';
+    this.context.fillStyle = BLACK;
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
@@ -143,10 +142,10 @@ class DrawEngine {
 
   drawBrick(x: number, y: number, width: number, height: number) {
 
-    this.context.strokeStyle = BLACK;
-    this.context.fillStyle = GRAY;
+    this.context.fillStyle = BLACK;
     this.context.fillRect(x, y, width, height);
-    this.context.strokeRect(x + 1, y + 1, width - 1, height - 1);
+    this.context.fillStyle = GRAY;
+    this.context.fillRect(x + 1, y + 1, width - 1, height - 1);
   }
 
   drawBrickWall() {
@@ -243,8 +242,8 @@ class DrawEngine {
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
     const width = text.length * 10;
-    this.context.strokeRect(x - width/2, y, width, 13);
-    this.drawText(text, 10, x, y + 2, color, 'center');
+    this.context.fillRect(x - width/2, y, width, 13);
+    this.drawText(text, 10, x, y + 2, BLACK, 'center');
   }
 
   // Adapted from https://xem.github.io/miniPixelArt/
@@ -329,7 +328,7 @@ class DrawEngine {
     this.context.fillStyle = WHITE2;
     this.drawCircle(WIDTH / 2, 8, 7);
     this.context.fill();
-    const angle = Math.PI * time / MARKET_TIME - Math.PI/2;
+    const angle = 2 * Math.PI * time / MARKET_TIME - Math.PI/2;
     const xc = WIDTH / 2;
     const yc = 8;
     const r = 6;

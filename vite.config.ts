@@ -200,11 +200,11 @@ function ectPlugin(): Plugin {
         }).map(file => 'dist/' + file);
         const args = ['-strip', '-zip', '-10009', 'dist/index.html', ...assetFiles];
         const result = execFileSync(ect, args);
-        console.log('ECT result', result.toString().trim());
+        console.debug('ECT result', result.toString().trim());
         const stats = statSync('dist/index.zip');
-        console.log('ZIP size', stats.size);
+        console.debug('ZIP size', stats.size);
       } catch (err) {
-        console.log('ECT error', err);
+        console.debug('ECT error', err);
       }
     },
   };

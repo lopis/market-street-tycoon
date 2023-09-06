@@ -19,9 +19,9 @@ const cliToApiMaps = [
 ];
 
 rl.question('How many seconds should RoadRoller spend looking for the best config? ', seconds => {
-  console.log('Building...');
+  console.debug('Building...');
   exec('vite build', () => {
-    console.log(`Spending ${seconds} seconds searching for config...`);
+    console.debug(`Spending ${seconds} seconds searching for config...`);
     exec(`node node_modules/roadroller/cli.mjs ${__dirname}/dist/output.js -D -OO`, { timeout: seconds * 1000, killSignal: 'SIGINT', maxBuffer: 4069 * 1024 }, (error, stdout, stderr) => {
       const bestConfigJs = { allowFreeVars: true };
       const bestConfigConsole = stderr.split('\n').reverse().find(line => line.includes('<-'));
@@ -36,7 +36,7 @@ rl.question('How many seconds should RoadRoller spend looking for the best confi
         });
       });
       fs.writeFileSync(`${__dirname}/roadroller-config.json`, JSON.stringify(bestConfigJs, null, 2));
-      console.log(`BEST CONFIG: ${bestConfigConsole}`);
+      console.debug(`BEST CONFIG: ${bestConfigConsole}`);
       process.exit(0);
     });
   });
