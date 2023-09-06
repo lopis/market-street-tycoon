@@ -1,6 +1,5 @@
 import { controls } from '@/core/controls';
 import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
-import { trigger } from '@/core/events';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -8,7 +7,7 @@ import StockState from './stock.state';
 
 class BuyState implements State {
   gameData: GameData;
-  selectedSupplier = 0;
+  selection = 0;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -39,7 +38,7 @@ class BuyState implements State {
       drawEngine.drawButton(
         WIDTH - 20,
         row + 5,
-        this.selectedSupplier === index ? 'white' : 'gray',
+        this.selection === index ? 'white' : 'gray',
         'BUY'
       );
     });
@@ -47,7 +46,7 @@ class BuyState implements State {
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
-      this.selectedSupplier === this.gameData.suppliers.length ? 'white' : 'gray',
+      this.selection === this.gameData.suppliers.length ? 'white' : 'gray',
       'next'
     );
 
@@ -55,15 +54,11 @@ class BuyState implements State {
   }
 
   updateControls() {
-    if (controls.isUp && !controls.previousState.isUp && this.selectedSupplier > 0) {
-      this.selectedSupplier--;
-    }
-    if (controls.isDown && !controls.previousState.isDown && this.selectedSupplier < this.gameData.suppliers.length) {
-      this.selectedSupplier++;
-    }
+    controls.updateSelection(this, this.gameData.suppliers.length);
+
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      const supplier = this.gameData.suppliers[this.selectedSupplier];
+      const supplier = this.gameData.suppliers[this.selection];
       if (
         supplier &&
         supplier.stock > 0
@@ -75,8 +70,8 @@ class BuyState implements State {
         supplier.stock = 0;
       }
 
-      if (this.selectedSupplier == this.gameData.suppliers.length) {
-        this.next()
+      if (this.selection == this.gameData.suppliers.length) {
+        this.next();
       }
     }
   }

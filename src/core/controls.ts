@@ -1,5 +1,3 @@
-import BuyState from '@/game-states/stock.state';
-import StockState from '@/game-states/stock.state';
 
 const enum XboxControllerButton {
   A,
@@ -18,6 +16,10 @@ const enum XboxControllerButton {
   DpadDown,
   DpadLeft,
   DpadRight,
+}
+
+interface SelectableState {
+  selection: number
 }
 
 class Controls {
@@ -119,11 +121,11 @@ class Controls {
     }
   }
 
-  updateSelection(state: BuyState | StockState) {
+  updateSelection(state: SelectableState, maxValue: number) {
     if (this.isUp && !this.previousState.isUp && state.selection > 0) {
       state.selection--;
     }
-    if (this.isDown && !this.previousState.isDown && state.selection < state.gameData.suppliers.length) {
+    if (this.isDown && !this.previousState.isDown && state.selection < maxValue) {
       state.selection++;
     }
   }

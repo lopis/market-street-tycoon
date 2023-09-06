@@ -8,6 +8,8 @@ import MarketState from './market.state';
 class StockState implements State {
   gameData: GameData;
   selection = 0;
+  private products: ProductType[] = [];
+  curtainPos = 2;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -17,7 +19,15 @@ class StockState implements State {
     playStateMachine.setState(new MarketState(this.gameData));
   }
 
-  onUpdate() {
+  onEnter() {
+    this.products = products.filter(product => {
+      const stock = this.gameData.stock[product];
+      return !!stock;
+    });
+    console.log(this.products);
+  }
+
+  onUpdate(timeElapsed = 0) {
     drawEngine.drawBrickWall();
     drawEngine.drawOverlay();
 
@@ -46,15 +56,20 @@ class StockState implements State {
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
-      this.selection === this.gameData.suppliers.length ? 'white' : 'gray',
+      this.selection === this.products.length ? 'white' : 'gray',
       'next'
     );
+
+    if (this.curtainPos != 2) {
+      this.curtainPos = Math.min(1, this.curtainPos + timeElapsed / 1000);
+      drawEngine.drawCurtains(1 - this.curtainPos);
+    }
 
     this.updateControls();
   }
 
   updateControls() {
-    controls.updateSelection(this);
+    controls.updateSelection(this, this.products.length);
 
     const isLeft = controls.isLeft && !controls.previousState.isLeft;
     const isRight = controls.isRight && !controls.previousState.isRight;
@@ -68,20 +83,11 @@ class StockState implements State {
     }
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      const supplier = this.gameData.suppliers[this.selection];
-      if (
-        supplier &&
-        supplier.stock > 0
-        && supplier.price <= this.gameData.money
-      ) {
-        this.gameData.money -= supplier.price;
-        // @ts-ignore
-        this.gameData.stock[supplier.productName] += supplier.stock;
-        supplier.stock = 0;
-      }
-
-      if (this.selection == this.gameData.suppliers.length) {
-        this.next();
+      if (this.selection == this.products.length) {
+        this.curtainPos = 0;
+        setTimeout(() => {
+          this.next();
+        }, 1200);
       }
     }
   }

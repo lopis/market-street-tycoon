@@ -1,6 +1,7 @@
 import { Person } from '@/game-states/market.state';
-import GameData from './game-data';
-import { Icon, PALETTE } from './icons';
+import GameData, { Stock } from './game-data';
+import { Icon, PALETTE, icons } from './icons';
+import { easeInOutSine } from './util';
 
 export const HEIGHT = 144;
 export const WIDTH = 160;
@@ -131,6 +132,22 @@ class DrawEngine {
     this.context.fillRect(0, 90, WIDTH, 54);
   }
 
+  drawCurtains(pos: number) {
+    const width = WIDTH / 8;
+    const height = HEIGHT / 4;
+    let i = 4;
+    while (i--) {
+      let j = 4;
+      while (j--) {
+        const offset = j % 2;
+        const p = Math.round(easeInOutSine(pos) * WIDTH);
+        this.context.fillStyle = i % 2 ? RED1 : RED2;
+        this.context.fillRect(i * width - p, j * height, width + offset, height);
+        this.context.fillRect(WIDTH - (i+1) * width + p, j * height, width + offset, height);
+      }
+    }
+  }
+
   gradient(x0: number, y0: number, x1: number, y1: number, stops: Array<Array<any>>) {
     const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
     stops.forEach(([offset, color], index) => {
@@ -221,6 +238,24 @@ class DrawEngine {
         }
       }
     }
+  }
+
+  drawProducts(stock: Stock) {
+    Object.entries(stock).forEach(([type, amount], i) => {
+      // @ts-ignore
+      const icon : Icon = icons[type];
+      const perRow = Math.floor(27 / icon.padding);
+      // @ts-ignore
+      const max = Math.min(amount, perRow * Math.ceil(25 / icon.padding));
+      for(let j = 0; j < max; j++) {
+        const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
+        this.drawIcon(
+          icon,
+          37 + (j % perRow) * icon.padding + i * 30 + rowOffset,
+          73 + Math.floor(j / perRow) * (icon.padding-1) - icon.y,
+        );
+      }
+    });
   }
 
   drawState(data: GameData) {

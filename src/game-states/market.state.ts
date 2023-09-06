@@ -1,7 +1,6 @@
 import { initAudio as initMarketMusic } from '@/core/audio';
 import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
-import { Icon, icons } from '@/core/icons';
 import { State } from '@/core/state';
 
 export interface Person {
@@ -13,6 +12,7 @@ export interface Person {
 class MarketState implements State {
   gameData: GameData;
   people: Person[] = [];
+  curtainPos = 0;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -32,27 +32,19 @@ class MarketState implements State {
     initMarketMusic();
   }
 
-  onUpdate() {
+  onUpdate(timeElapsed = 0) {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
-    Object.entries(this.gameData.stock).forEach(([type, stock], i) => {
-      // @ts-ignore
-      const icon : Icon = icons[type];
-      const perRow = Math.floor(27 / icon.padding);
-      const max = Math.min(stock, perRow * Math.ceil(25 / icon.padding));
-      for(let j = 0; j < max; j++) {
-        const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
-        drawEngine.drawIcon(
-          icon,
-          37 + (j % perRow) * icon.padding + i * 30 + rowOffset,
-          73 + Math.floor(j / perRow) * (icon.padding-1) - icon.y,
-        );
-      }
-    });
+    drawEngine.drawProducts(this.gameData.stock);
     drawEngine.drawState(this.gameData);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
+
+    if (this.curtainPos < 1) {
+      this.curtainPos = Math.min(1, this.curtainPos + timeElapsed / 1000);
+      drawEngine.drawCurtains(this.curtainPos);
+    }
   }
 }
 

@@ -13,6 +13,8 @@ type Supplier = {
   stock: number
 }
 
+export type Stock = {[Property in ProductType]?: number}
+
 const names = [
   'Catarina',
   'Leonor',
@@ -42,7 +44,7 @@ const nextName = () => {
 class GameData {
   suppliers: Supplier[] = [];
   money: number;
-  stock: {[Property in ProductType]?: number} = {};
+  stock: Stock = {};
   price: {[Property in ProductType]?: number} = {};
   week = 1;
 
