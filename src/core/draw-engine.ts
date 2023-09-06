@@ -1,4 +1,4 @@
-import { Person } from '@/game-states/market.state';
+import { MARKET_TIME, Person } from '@/game-states/market.state';
 import GameData, { Stock } from './game-data';
 import { Icon, PALETTE, icons } from './icons';
 import { easeInOutSine } from './util';
@@ -87,6 +87,35 @@ class DrawEngine {
         }
       }
     }
+  }
+
+  // https://rosettacode.org/wiki/Bitmap/Bresenham's_line_algorithm#JavaScript
+  drawLine(x0: number, y0: number, x1: number, y1: number, color: string) {
+    let x = Math.round(x0);
+    let y = Math.round(y0);
+    x1 = Math.round(x1);
+    y1 = Math.round(y1);
+
+    let dx = x1 - x0;
+    let dy = y1 - y0;
+    let dmax = Math.max(Math.abs(dx), Math.abs(dy));
+    dx = dx / dmax;
+    dy = dy / dmax;
+
+    const points = [ ];
+    this.context.fillStyle = color;
+    debugger;
+    while(dmax--) {
+      points.push([x, y]);
+      x += dx;
+      y += dy;
+    }
+
+    this.context.beginPath();
+    points.map(([px, py]) => {
+      this.context.rect(Math.round(px), Math.round(py), 1, 1);
+    });
+    this.context.fill();
   }
 
   drawOverlay() {
@@ -293,6 +322,18 @@ class DrawEngine {
       }
     });
     this.context.fill();
+  }
+
+  drawClock(time: number) {
+    this.context.beginPath();
+    this.context.fillStyle = WHITE2;
+    this.drawCircle(WIDTH / 2, 8, 7);
+    this.context.fill();
+    const angle = Math.PI * time / MARKET_TIME - Math.PI/2;
+    const xc = WIDTH / 2;
+    const yc = 8;
+    const r = 6;
+    this.drawLine(xc, yc, xc + r * Math.cos(angle), yc + r * Math.sin(angle), BLACK);
   }
 
   drawFPS() {

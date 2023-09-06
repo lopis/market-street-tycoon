@@ -27,7 +27,7 @@ let a: AudioContext;
 let noise: AudioBufferSourceNode | null;
 const musicVolume = 0.3;
 const noiseVolume = 0.3;
-const duration = 0.3;
+const duration = 0.25;
 
 // Sound player
 export const playSound = (fn: (i: number) => number) => {

@@ -22,6 +22,9 @@ class StockState implements State {
   onEnter() {
     this.products = products.filter(product => {
       const stock = this.gameData.stock[product];
+      if (!this.gameData.price[product]){
+        this.gameData.price[product] = 15;
+      }
       return !!stock;
     });
     console.log(this.products);

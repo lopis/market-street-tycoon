@@ -3,6 +3,8 @@ import { WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 
+export const MARKET_TIME = 12000;
+
 export interface Person {
   height: number
   step: number
@@ -13,6 +15,7 @@ class MarketState implements State {
   gameData: GameData;
   people: Person[] = [];
   curtainPos = 0;
+  time = 0;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -33,6 +36,7 @@ class MarketState implements State {
   }
 
   onUpdate(timeElapsed = 0) {
+    this.time += timeElapsed;
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
@@ -40,6 +44,7 @@ class MarketState implements State {
     drawEngine.drawState(this.gameData);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
+    drawEngine.drawClock(this.time);
 
     if (this.curtainPos < 1) {
       this.curtainPos = Math.min(1, this.curtainPos + timeElapsed / 1000);

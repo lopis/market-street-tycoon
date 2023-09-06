@@ -62,6 +62,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/ban-ts-comment': 'off',
+    'no-constant-condition': 'off',
   },
   overrides: [
     {

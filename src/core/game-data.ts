@@ -29,8 +29,8 @@ const names = [
   'Jacinta',
   'João',
   'Diogo',
-  'Luciana',
   'Simão',
+  'Luciana',
   'Gil',
 ];
 
@@ -49,11 +49,6 @@ class GameData {
   week = 1;
 
   constructor() {
-    products.forEach(p => {
-      this.stock[p] = 30;
-      this.price[p] = 5;
-    });
-
     this.money = 20;
     const apple1: Supplier = {
       productName: 'apples',
