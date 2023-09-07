@@ -65,8 +65,8 @@ class GameData {
       price: 10,
       stock: 10,
     };
-    this.demand.bread = 0.6;
-    this.marketPrice.bread = 3;
+    this.demand[bread.productName] = 0.6;
+    this.marketPrice[bread.productName] = 3;
     this.suppliers.push(bread);
 
     const apples: Supplier = {
@@ -75,8 +75,8 @@ class GameData {
       price: 20,
       stock: 24,
     };
-    this.demand.apples = 0.5;
-    this.marketPrice.apples = 4;
+    this.demand[apples.productName] = 0.5;
+    this.marketPrice[apples.productName] = 4;
     this.suppliers.push(apples);
 
     const oil: Supplier = {
@@ -85,8 +85,8 @@ class GameData {
       price: 25,
       stock: 10,
     };
-    this.demand.oil = 0.3;
-    this.marketPrice.oil = 8;
+    this.demand[oil.productName] = 0.3;
+    this.marketPrice[oil.productName] = 8;
     this.suppliers.push(oil);
   }
 
