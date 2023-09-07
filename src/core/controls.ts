@@ -58,7 +58,7 @@ class Controls {
     this.previousState.isRight = this.isRight;
     this.previousState.isConfirm = this.isConfirm;
     this.previousState.isEscape = this.isEscape;
-    const gamepad = navigator.getGamepads()[0];
+    const gamepad = navigator.getGamepads && navigator.getGamepads()[0];
     const isButtonPressed = (button: XboxControllerButton) => gamepad?.buttons[button].pressed;
 
     const leftVal = (

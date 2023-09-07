@@ -74,6 +74,7 @@ class BuyState implements State {
         this.gameData.money -= supplier.price;
         const s = this.gameData.stock[supplier.productName] || 0;
         this.gameData.stock[supplier.productName] = s + supplier.stock;
+        supplier.stock = 0;
       }
 
       if (this.selection == this.gameData.suppliers.length) {

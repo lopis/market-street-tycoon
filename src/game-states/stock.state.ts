@@ -35,7 +35,7 @@ class StockState implements State {
     drawEngine.drawHeader('Manage stock', this.gameData);
 
     let index = 0;
-    products
+    this.products
     .forEach((product) => {
       const row = index * 24 + 24;
       const stock = this.gameData.stock[product];
@@ -52,7 +52,7 @@ class StockState implements State {
         s,
         this.active[0] === index && this.active[1] === s,
       ));
-      drawEngine.drawText(`${this.gameData.price[product]}$`, 10, WIDTH - 33, row + 7, A_WHITE, 'center');
+      drawEngine.drawText(`${this.gameData.price[product as ProductType]}$`, 10, WIDTH - 33, row + 7, A_WHITE, 'center');
       index++;
     });
 
@@ -82,11 +82,10 @@ class StockState implements State {
         this.active = [-1, ''];
       }, 100);
 
-      // @ts-ignore
-      const product: [ProductType, number] = Object.entries(this.gameData.stock)[this.selection];
-      if (product && this.gameData.price[product[0]] != undefined) {
+      const product = this.products[this.selection];
+      if (product && this.gameData.price[product as ProductType] != undefined) {
         // @ts-ignore
-        this.gameData.price[product[0]] = Math.max(0, this.gameData.price[product[0]] + (isLeft ? -1 : 1));
+        this.gameData.price[product] = Math.max(0, this.gameData.price[product] + (isLeft ? -1 : 1));
       }
     }
 
