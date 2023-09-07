@@ -34,8 +34,9 @@ class StockState implements State {
     drawEngine.drawOverlay(this.gameData.week);
     drawEngine.drawHeader('Manage stock', this.gameData);
 
+    let index = 0;
     products
-    .forEach((product, index) => {
+    .forEach((product) => {
       const row = index * 24 + 24;
       const stock = this.gameData.stock[product];
 
@@ -52,6 +53,7 @@ class StockState implements State {
         this.active[0] === index && this.active[1] === s,
       ));
       drawEngine.drawText(`${this.gameData.price[product]}$`, 10, WIDTH - 33, row + 7, A_WHITE, 'center');
+      index++;
     });
 
     drawEngine.drawButton(

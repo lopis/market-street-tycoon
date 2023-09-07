@@ -42,7 +42,7 @@ export default defineConfig(({ command, mode }) => {
         output: {
           inlineDynamicImports: true,
           manualChunks: undefined,
-          assetFileNames: `[name].[ext]`
+          assetFileNames: '[name].[ext]'
         },
       }
     };
@@ -59,7 +59,7 @@ function closurePlugin(): Plugin {
     // @ts-ignore
     renderChunk: applyClosure,
     enforce: 'post',
-  }
+  };
 }
 
 async function applyClosure(js: string, chunk: any) {
@@ -87,7 +87,7 @@ async function applyClosure(js: string, chunk: any) {
 
       console.warn(stdErr); // If we make it here, there were warnings but no errors
     });
-  })
+  });
 }
 
 
@@ -96,7 +96,7 @@ function roadrollerPlugin(): Plugin {
     name: 'vite:roadroller',
     transformIndexHtml: {
       enforce: 'post',
-      transform: async (html: string, ctx?: IndexHtmlTransformContext): Promise<string> => {
+      transform: async(html: string, ctx?: IndexHtmlTransformContext): Promise<string> => {
         // Only use this plugin during build
         if (!ctx || !ctx.bundle) {
           return html;
@@ -192,7 +192,7 @@ function embedCss(html: string, asset: OutputAsset): string {
 function ectPlugin(): Plugin {
   return {
     name: 'vite:ect',
-    writeBundle: async (): Promise<void> => {
+    writeBundle: async(): Promise<void> => {
       try {
         const files = await fs.readdir('dist/');
         const assetFiles = files.filter(file => {

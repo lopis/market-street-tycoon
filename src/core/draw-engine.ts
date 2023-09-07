@@ -40,7 +40,7 @@ class DrawEngine {
     // c2d.addEventListener('click', () => {
     //   alert(`Use the ${screen.width > 900 ? 'arrow keys and Enter' : 'game pad below'} to control the game.`);
     // }, { once: true });
-    this.fontContext = f.getContext('2d');
+    this.fontContext = font.getContext('2d');
     this.context.canvas.height = HEIGHT;
     this.context.canvas.width = WIDTH;
   }
