@@ -12,8 +12,13 @@ WHITE1 = '#ffeae0',
 WHITE2 = '#f7cebd',
 BROWN1 = '#b77e62',
 BROWN2 = '#6d412e',
+BLUE = '#1155bb',
+PURPLE = '#4621ac',
+GREEN = '#17812e',
 GRAY = '#7d736e',
-BLACK = '#3f2e28';
+A_WHITE = '#FFFFFF88',
+A_BLACK = '#00000088',
+BLACK = '#322722';
 
 class DrawEngine {
   //   context.strokeStyle = 'black';
@@ -117,9 +122,17 @@ class DrawEngine {
     this.context.fill();
   }
 
-  drawOverlay() {
-    this.context.fillStyle = BLACK;
+  drawOverlay(week: number) {
+    const colors = [PURPLE, BLACK, RED2, GREEN, BLUE];
+    this.context.fillStyle = colors[week % colors.length];
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
+  }
+
+  drawHeader(title: string, gameData: GameData) {
+    this.context.fillStyle = A_BLACK;
+    this.context.fillRect(0, 0, WIDTH, 12);
+    this.drawText(`Week ${gameData.week} - ${title}`, 10, 1, 1, RED1);
+    this.drawText(`${gameData.money}$`, 10, WIDTH, 1, GREEN, 'right');
   }
 
   drawCircle(xc: number, yc: number, radius: number, skew = 0) {
@@ -238,12 +251,15 @@ class DrawEngine {
     }
   }
 
-  drawButton(x: number, y: number, color: string, text: string) {
+  drawButton(x: number, y: number, color: string, text: string, active = false) {
+    const activeOffset = active ? 1 : 0;
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
     const width = text.length * 10;
+    this.context.translate(activeOffset, activeOffset);
     this.context.fillRect(x - width/2, y, width, 13);
     this.drawText(text, 10, x, y + 2, BLACK, 'center');
+    this.context.translate(-activeOffset, -activeOffset);
   }
 
   // Adapted from https://xem.github.io/miniPixelArt/

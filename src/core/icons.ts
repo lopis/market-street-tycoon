@@ -5,7 +5,7 @@ import { ProductType } from './game-data';
 export const PALETTE = [
   '000',
   'c42',
-  '2a6',
+  '2c4',
   '15b',
   'ea0',
   'ddd',

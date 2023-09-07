@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -9,6 +9,7 @@ import { icons } from '@/core/icons';
 class BuyState implements State {
   gameData: GameData;
   selection = 0;
+  active = -1;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -19,11 +20,9 @@ class BuyState implements State {
   }
 
   onUpdate() {
-    drawEngine.drawBrickWall();
-    drawEngine.drawOverlay();
+    drawEngine.drawOverlay(this.gameData.week);
 
-    drawEngine.drawText(`Week ${this.gameData.week} - Suppliers`, 10, 1, 1, 'indianred');
-    drawEngine.drawText(`${this.gameData.money}$`, 10, WIDTH, 1, 'green', 'right');
+    drawEngine.drawHeader('Suppliers', this.gameData);
 
     this.gameData.suppliers
     .forEach((supplier, index) => {
@@ -31,26 +30,28 @@ class BuyState implements State {
 
       drawEngine.drawIcon(icons[supplier.productName], 3, row + 6);
 
-      drawEngine.drawText(supplier.supplierName, 10, 12, 1 + row, 'gray');
+      drawEngine.drawText(supplier.supplierName, 10, 12, 1 + row, A_WHITE);
       const productLine = `${supplier.stock} ${supplier.productName}   ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
-        10, 12, row + 11, 'gray'
+        10, 12, row + 11, A_WHITE
       );
 
       drawEngine.drawButton(
         WIDTH - 20,
         row + 5,
-        this.selection === index ? 'white' : 'gray',
-        'BUY'
+        this.selection === index ? 'white' : A_WHITE,
+        'BUY',
+        this.active === index
       );
     });
 
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
-      this.selection === this.gameData.suppliers.length ? 'white' : 'gray',
-      'next'
+      this.selection === this.gameData.suppliers.length ? 'white' : A_WHITE,
+      'next',
+      this.active === this.gameData.suppliers.length
     );
 
     this.updateControls();
@@ -59,8 +60,11 @@ class BuyState implements State {
   updateControls() {
     controls.updateSelection(this, this.gameData.suppliers.length);
 
-
     if (controls.isConfirm && !controls.previousState.isConfirm) {
+      this.active = this.selection;
+      setTimeout(() => {
+        this.active = -1;
+      }, 100);
       const supplier = this.gameData.suppliers[this.selection];
       if (
         supplier &&

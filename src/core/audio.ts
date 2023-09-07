@@ -131,7 +131,7 @@ const frequencies = {
   notes.push(-note);
 });
 
-const musicIsPlaying = true;
+let musicIsPlaying = true;
 let currentNoteIndex = 0;
 let startTime = 0;
 
@@ -148,19 +148,19 @@ const scheduleNextNote = (repeat = false) => {
     }
   }
   // Using setTimeout instead of requestAnimationFrame otherwise it stops when window is not focused.
-  setTimeout(scheduleNextNote, 10);
+  setTimeout(scheduleNextNote, duration);
 };
 
-const startMusicLoop = (repeat = false) => {
+export const stopMarketMusic = () => {
+  musicIsPlaying = false;
+};
+
+export const startMarketMusic = (repeat = false) => {
   a = new AudioContext();
   startTime = a.currentTime;
   currentNoteIndex = 0;
   startTime = 0;
   scheduleNextNote(repeat);
-};
-
-export const initAudio = (repeat = false) => {
-  startMusicLoop(repeat);
 };
 
 // export const toggleSoundEffects = () => {

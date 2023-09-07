@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData, { ProductType, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -8,6 +8,7 @@ import MarketState from './market.state';
 class StockState implements State {
   gameData: GameData;
   selection = 0;
+  active = [-1, ''];
   private products: ProductType[] = [];
   curtainPos = 2;
 
@@ -30,11 +31,8 @@ class StockState implements State {
   }
 
   onUpdate(timeElapsed = 0) {
-    drawEngine.drawBrickWall();
-    drawEngine.drawOverlay();
-
-    drawEngine.drawText(`Week ${this.gameData.week} - Manage Stock`, 10, 1, 1, 'indianred');
-    drawEngine.drawText(`${this.gameData.money}$`, 10, WIDTH, 1, 'green', 'right');
+    drawEngine.drawOverlay(this.gameData.week);
+    drawEngine.drawHeader('Manage stock', this.gameData);
 
     products
     .forEach((product, index) => {
@@ -43,23 +41,24 @@ class StockState implements State {
 
       if (!stock) return;
 
-      drawEngine.drawText(product, 10, 1, 1 + row, 'gray');
-      drawEngine.drawText(`${stock}`, 10, 1, row + 11, 'gray');
+      drawEngine.drawText(product, 10, 1, 1 + row, A_WHITE);
+      drawEngine.drawText(`${stock}`, 10, 1, row + 11, A_WHITE);
 
       ['-', '+'].map((s,i) => drawEngine.drawButton(
         WIDTH - 60 + i*53,
         row + 5,
-        this.selection === index ? 'white' : 'gray',
-        s
+        this.selection === index ? 'white' : A_WHITE,
+        s,
+        this.active[0] === index && this.active[1] === s,
       ));
-      drawEngine.drawText(`${this.gameData.price[product]}$`, 10, WIDTH - 33, row + 7, 'gray', 'center');
+      drawEngine.drawText(`${this.gameData.price[product]}$`, 10, WIDTH - 33, row + 7, A_WHITE, 'center');
     });
 
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
-      this.selection === this.products.length ? 'white' : 'gray',
-      'next'
+      this.selection === this.products.length ? 'white' : A_WHITE,
+      'next',
     );
 
     if (this.curtainPos != 2) {
@@ -76,6 +75,11 @@ class StockState implements State {
     const isLeft = controls.isLeft && !controls.previousState.isLeft;
     const isRight = controls.isRight && !controls.previousState.isRight;
     if((isLeft || isRight) && this.selection < Object.keys(this.gameData.stock).length) {
+      this.active = [this.selection, isLeft ? '-' : '+'];
+      setTimeout(() => {
+        this.active = [-1, ''];
+      }, 100);
+
       // @ts-ignore
       const product: [ProductType, number] = Object.entries(this.gameData.stock)[this.selection];
       if (product && this.gameData.price[product[0]] != undefined) {

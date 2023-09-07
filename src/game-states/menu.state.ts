@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { drawEngine } from '@/core/draw-engine';
+import { A_WHITE, RED1, WIDTH, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { gameState } from './game.state';
@@ -16,12 +16,21 @@ class MenuState implements State {
   private isStartSelected = true;
 
   onUpdate() {
-    drawEngine.drawBrickWall();
-    drawEngine.drawOverlay();
+    drawEngine.drawOverlay(1);
 
-    drawEngine.drawText('Market Street Tycoon', 10, 10, 40);
-    drawEngine.drawText('Start', 10, 10, 60, this.isStartSelected ? 'white' : 'gray');
-    drawEngine.drawText('Toggle Fullscreen', 10, 10, 70, this.isStartSelected ? 'gray' : 'white');
+    ['Market', 'Street', 'Tycoon'].map((s, i) => {
+      drawEngine.drawText(s, 18, WIDTH / 2, 8 + i * 16, RED1, 'center');
+    });
+    drawEngine.drawText(
+      this.isStartSelected ? '▸ Start' : '  Start',
+      10, 10, 80,
+      this.isStartSelected ? 'white' : A_WHITE
+    );
+    drawEngine.drawText(
+      !this.isStartSelected ? '▸ Fullscreen' : '  Fullscreen',
+      10, 10, 95,
+      !this.isStartSelected ? 'white' : A_WHITE
+    );
 
     this.updateControls();
   }
