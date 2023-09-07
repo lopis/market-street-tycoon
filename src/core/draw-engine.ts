@@ -128,12 +128,12 @@ class DrawEngine {
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
-  drawHeader(title: string, gameData: GameData, total?: number) {
+  drawHeader(title: string, gameData: GameData, total = -1) {
     this.context.fillStyle = A_BLACK;
     this.context.fillRect(0, 0, WIDTH, 12);
     this.drawText(`Week ${gameData.week} - ${title}`, 10, 1, 1, RED1);
     this.drawText(`${gameData.money}$`, 10, WIDTH, 1, GREEN, 'right');
-    if (total != undefined) {
+    if (total != -1) {
       this.drawText(`+ ${total}$`, 10, WIDTH, 13, GREEN, 'right');
     }
   }

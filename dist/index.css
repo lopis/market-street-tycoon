@@ -80,6 +80,11 @@ html, body {
         padding-top: 20vh;
     }
 
+    #gamepad {
+        top: -10vw;
+        left: 4vw;
+    }
+
     #c2d {
         height: auto;
         width: 100vw;
