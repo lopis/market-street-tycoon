@@ -1,6 +1,6 @@
 import { startMarketMusic, stopMarketMusic } from '@/core/audio';
 import { WIDTH, drawEngine } from '@/core/draw-engine';
-import GameData from '@/core/game-data';
+import GameData, { ProductValue, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import RecapState from './recap.state';
@@ -16,6 +16,8 @@ export interface Person {
 class MarketState implements State {
   gameData: GameData;
   people: Person[] = [];
+  productDemand: ProductValue = {};
+  productSales: ProductValue = {};
   curtainPos = 0;
   time = 0;
 
@@ -35,6 +37,21 @@ class MarketState implements State {
 
   onEnter() {
     startMarketMusic();
+    products.map(product => {
+      const stock = this.gameData.stock[product];
+      if (stock) {
+        // calculted total sales based on demand
+        const marketPrice = this.gameData.marketPrice[product] || 0;
+        const price = this.gameData.price[product] || 1;
+        const priceRatio =  marketPrice / price;
+        const demand = this.gameData.demand[product] || 0;
+        const totalCustomers = 50;
+        // Product sold each milisecond
+        this.productDemand[product] = (priceRatio * demand * totalCustomers) / MARKET_TIME;
+        this.productSales[product] = 0;
+        console.log(priceRatio, demand);
+      }
+    });
   }
 
   onLeave() {
@@ -45,27 +62,33 @@ class MarketState implements State {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
-    drawEngine.drawProducts(this.gameData.stock);
-    drawEngine.drawState(this.gameData);
+    drawEngine.drawProducts(this.gameData.stock, this.productSales);
+    drawEngine.drawState(this.gameData, this.productSales);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
     drawEngine.drawClock(this.time);
 
     if (this.time < MARKET_TIME) {
       this.time += timeElapsed;
+      Object.entries(this.productDemand).forEach(([product, demand]) => {
+        // @ts-ignore - product is always valid key
+        this.productSales[product] += demand * timeElapsed;
+      });
     }
 
     if (this.time > MARKET_TIME) {
+      // Round over, close curtains
       if (this.curtainPos > 0) {
         this.curtainPos = Math.max(0, this.curtainPos - timeElapsed / 1000);
-        drawEngine.drawCurtains(this.curtainPos);
       } else {
+        this.gameData.save(this.productDemand, this.productSales);
         playStateMachine.setState(new RecapState(this.gameData));
       }
     } else if (this.curtainPos < 1) {
+      // Start, open curtains
       this.curtainPos = Math.min(1, this.curtainPos + timeElapsed / 1000);
-      drawEngine.drawCurtains(this.curtainPos);
     }
+    drawEngine.drawCurtains(this.curtainPos);
   }
 }
 

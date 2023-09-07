@@ -14,7 +14,12 @@ type Supplier = {
   stock: number
 }
 
-export type Stock = {[Property in ProductType]?: number}
+export type ProductValue = {[Property in ProductType]?: number}
+
+type HistoryEntry = {
+  demand: ProductValue
+  sales: ProductValue
+}
 
 const names = [
   'Catarina',
@@ -45,27 +50,48 @@ const nextName = () => {
 class GameData {
   suppliers: Supplier[] = [];
   money: number;
-  stock: Stock = {};
-  price: {[Property in ProductType]?: number} = {};
+  stock: ProductValue = {};
+  price: ProductValue = {};
+  demand: ProductValue = {};
+  marketPrice: ProductValue = {};
   week = 1;
+  history: HistoryEntry[] = [];
 
   constructor() {
     this.money = 20;
-    const apple1: Supplier = {
-      productName: 'apples',
+    const bread: Supplier = {
+      productName: 'bread',
       supplierName: nextName(),
       price: 10,
       stock: 10,
     };
-    this.suppliers.push(apple1);
+    this.demand.bread = 0.6;
+    this.marketPrice.bread = 3;
+    this.suppliers.push(bread);
 
-    const apple2: Supplier = {
+    const apples: Supplier = {
       productName: 'apples',
       supplierName: nextName(),
       price: 20,
       stock: 24,
     };
-    this.suppliers.push(apple2);
+    this.demand.apples = 0.5;
+    this.marketPrice.apples = 4;
+    this.suppliers.push(apples);
+
+    const oil: Supplier = {
+      productName: 'oil',
+      supplierName: nextName(),
+      price: 25,
+      stock: 10,
+    };
+    this.demand.oil = 0.3;
+    this.marketPrice.oil = 8;
+    this.suppliers.push(oil);
+  }
+
+  save(demand: ProductValue, sales: ProductValue) {
+    this.history[this.week] = { demand, sales };
   }
 }
 

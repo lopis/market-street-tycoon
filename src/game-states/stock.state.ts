@@ -88,7 +88,7 @@ class StockState implements State {
       }
     }
 
-    if (controls.isConfirm && !controls.previousState.isConfirm) {
+    if (controls.isConfirm && !controls.previousState.isConfirm && this.curtainPos === 2) {
       if (this.selection == this.products.length) {
         this.curtainPos = 0;
         setTimeout(() => {

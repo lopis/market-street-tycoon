@@ -1,5 +1,5 @@
 import { MARKET_TIME, Person } from '@/game-states/market.state';
-import GameData, { Stock } from './game-data';
+import GameData, { ProductValue } from './game-data';
 import { Icon, PALETTE, icons } from './icons';
 import { easeInOutSine } from './util';
 
@@ -128,11 +128,14 @@ class DrawEngine {
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
 
-  drawHeader(title: string, gameData: GameData) {
+  drawHeader(title: string, gameData: GameData, total?: number) {
     this.context.fillStyle = A_BLACK;
     this.context.fillRect(0, 0, WIDTH, 12);
     this.drawText(`Week ${gameData.week} - ${title}`, 10, 1, 1, RED1);
     this.drawText(`${gameData.money}$`, 10, WIDTH, 1, GREEN, 'right');
+    if (total != undefined) {
+      this.drawText(`+ ${total}$`, 10, WIDTH, 13, GREEN, 'right');
+    }
   }
 
   drawCircle(xc: number, yc: number, radius: number, skew = 0) {
@@ -290,13 +293,15 @@ class DrawEngine {
     }
   }
 
-  drawProducts(stock: Stock) {
+  drawProducts(stock: ProductValue, productSales: ProductValue) {
     Object.entries(stock).forEach(([type, amount], i) => {
+      // @ts-ignore -- type is a valid key
+      const finalStock = Math.floor(amount - productSales[type]);
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);
       // @ts-ignore
-      const max = Math.min(amount, perRow * Math.ceil(25 / icon.padding));
+      const max = Math.min(finalStock, perRow * Math.ceil(25 / icon.padding));
       for(let j = 0; j < max; j++) {
         const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
         this.drawIcon(
@@ -308,14 +313,19 @@ class DrawEngine {
     });
   }
 
-  drawState(data: GameData) {
+  drawState(data: GameData, productSales: ProductValue) {
     const width = 50;
     const margin = 3;
+    const income = Object.entries(productSales).reduce((total, [product, sales]) => {
+      //@ts-ignore - product is a valid key
+      const price = data.price[product] || 0;
+      return total + price * Math.floor(sales);
+    }, 0);
     this.context.fillStyle = WHITE2;
     this.context.fillRect(margin, margin, width, 12);
     this.context.fillRect(WIDTH - margin - width, margin, width, 12);
     this.drawText(`Week ${data.week}`, 10, margin + 2, margin + 2, BLACK);
-    this.drawText(`${data.money}$`, 10, WIDTH - margin - 2, margin + 2, BLACK, 'right');
+    this.drawText(`${data.money + income}$`, 10, WIDTH - margin - 2, margin + 2, BLACK, 'right');
   }
 
   drawPeople(people: Person[]) {

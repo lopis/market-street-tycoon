@@ -160,6 +160,7 @@ export const startMarketMusic = (repeat = false) => {
   startTime = a.currentTime;
   currentNoteIndex = 0;
   startTime = 0;
+  musicIsPlaying = true;
   scheduleNextNote(repeat);
 };
 
