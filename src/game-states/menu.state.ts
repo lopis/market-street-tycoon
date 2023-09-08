@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { A_WHITE, BROWN1, HEIGHT, RED1, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, RED1, WHITE1, WHITE2, WIDTH, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
@@ -13,8 +13,9 @@ const toggleFullscreen = () => {
 };
 
 class MenuState implements State {
-  private selection = 0;
-  showAbout = true;
+  selection = 0;
+  showHelp = false;
+  showAbout = false;
 
   renderMenu() {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
@@ -37,22 +38,38 @@ class MenuState implements State {
     );
   }
 
-  renderAbout() {
-    [
+  renderHelp() {
+    this.renderText([
       'You\'re a merchant in the',
       ' village market, trying to',
       ' succed. Buy goods from the',
-      ' region and resell them.',
+      ' region and resell them for',
+      ' the best price, depending',
+      ' on customer demand.',
       '',
       'Use the arrow keys and Enter',
       ' to control the game.',
+    ]);
+  }
+
+  renderAbout() {
+    this.renderText([
+      'Game made by lopis',
+      'for js13k 2023',
       '',
-      'Made by lopis github.com/lopis',
-    ].map((line, i) => {
+      'github.com/lopis',
+      'js13kgames.com',
+      '',
+      '♥',
+    ], 13);
+  }
+
+  renderText(lines: string[], fontSize = 9){
+    lines.map((line, i) => {
       drawEngine.drawText(
         line,
-        9, 10, 12 + i * 12,
-        i < 5 ? WHITE1 : BROWN1,
+        fontSize, 10, 12 + i * 12,
+        WHITE2,
         'left',
         100
       );
@@ -68,16 +85,15 @@ class MenuState implements State {
   onUpdate() {
     drawEngine.drawOverlay(1);
 
-    this.showAbout ? this.renderAbout() : this.renderMenu();
+    this.showAbout ? this.renderAbout()
+    : this.showHelp ? this.renderHelp()
+    : this.renderMenu();
 
     this.updateControls();
   }
 
   updateControls() {
-    if ((controls.isUp && !controls.previousState.isUp)
-      || (controls.isDown && !controls.previousState.isDown)) {
-      this.selection = (this.selection + 1) % 3;
-    }
+    controls.updateSelection(this, 3);
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       if (this.showAbout) {

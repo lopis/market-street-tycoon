@@ -47,11 +47,10 @@ class BuyState implements State {
     });
 
     drawEngine.drawButton(
-      WIDTH / 2,
+      WIDTH - 30,
       HEIGHT - 15,
       this.selection === this.gameData.suppliers.length ? 'white' : A_WHITE,
       'next',
-      this.active === this.gameData.suppliers.length
     );
 
     this.updateControls();

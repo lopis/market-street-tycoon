@@ -4,6 +4,7 @@ import GameData, { ProductType, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import MarketState from './market.state';
+import BuyState from './buy.state';
 
 class StockState implements State {
   gameData: GameData;
@@ -11,9 +12,14 @@ class StockState implements State {
   active = [-1, ''];
   private products: ProductType[] = [];
   curtainPos = 2;
+  backSelected = false;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
+  }
+
+  back() {
+    playStateMachine.setState(new BuyState(this.gameData));
   }
 
   next() {
@@ -57,10 +63,17 @@ class StockState implements State {
     });
 
     drawEngine.drawButton(
-      WIDTH / 2,
+      WIDTH - 30,
       HEIGHT - 15,
-      this.selection === this.products.length ? 'white' : A_WHITE,
+      !this.backSelected && this.selection === this.products.length ? 'white' : A_WHITE,
       'next',
+    );
+
+    drawEngine.drawButton(
+      30,
+      HEIGHT - 15,
+      this.backSelected && this.selection === this.products.length ? 'white' : A_WHITE,
+      'back',
     );
 
     if (this.curtainPos != 2) {
@@ -76,25 +89,33 @@ class StockState implements State {
 
     const isLeft = controls.isLeft && !controls.previousState.isLeft;
     const isRight = controls.isRight && !controls.previousState.isRight;
-    if((isLeft || isRight) && this.selection < Object.keys(this.gameData.stock).length) {
-      this.active = [this.selection, isLeft ? '-' : '+'];
-      setTimeout(() => {
-        this.active = [-1, ''];
-      }, 100);
+    if((isLeft || isRight)) {
+      if (this.selection < Object.keys(this.gameData.stock).length) {
+        this.active = [this.selection, isLeft ? '-' : '+'];
+        setTimeout(() => {
+          this.active = [-1, ''];
+        }, 100);
 
-      const product = this.products[this.selection];
-      if (product && this.gameData.price[product as ProductType] != undefined) {
-        // @ts-ignore
-        this.gameData.price[product] = Math.max(0, this.gameData.price[product] + (isLeft ? -1 : 1));
+        const product = this.products[this.selection];
+        if (product && this.gameData.price[product as ProductType] != undefined) {
+          // @ts-ignore
+          this.gameData.price[product] = Math.max(0, this.gameData.price[product] + (isLeft ? -1 : 1));
+        }
+      } else {
+        this.backSelected = !this.backSelected;
       }
     }
 
     if (controls.isConfirm && !controls.previousState.isConfirm && this.curtainPos === 2) {
       if (this.selection == this.products.length) {
-        this.curtainPos = 0;
-        setTimeout(() => {
-          this.next();
-        }, 1200);
+        if (this.backSelected) {
+          this.back();
+        } else {
+          this.curtainPos = 0;
+          setTimeout(() => {
+            this.next();
+          }, 1200);
+        }
       }
     }
   }
