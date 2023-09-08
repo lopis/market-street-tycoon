@@ -2,7 +2,7 @@ import { State } from '@/core/state';
 import { A_WHITE, RED1, WIDTH, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
-import { gameState } from './game.state';
+import { GameState } from './game.state';
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -18,8 +18,8 @@ class MenuState implements State {
   onUpdate() {
     drawEngine.drawOverlay(1);
 
-    ['Market', 'Street', 'Tycoon'].map((s, i) => {
-      drawEngine.drawText(s, 18, WIDTH / 2, 8 + i * 16, RED1, 'center');
+    ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
+      drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, RED1, 'center', 100);
     });
     drawEngine.drawText(
       this.isStartSelected ? '▸ Start' : '  Start',
@@ -43,7 +43,7 @@ class MenuState implements State {
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       if (this.isStartSelected) {
-        gameStateMachine.setState(gameState);
+        gameStateMachine.setState(new GameState());
       } else {
         toggleFullscreen();
       }
