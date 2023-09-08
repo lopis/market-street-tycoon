@@ -67,9 +67,9 @@ class DrawEngine {
   // }
 
   // Adapted from https://github.com/xem/miniPixelFont
-  drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left') {
+  // threshold from 0 to 255
+  drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 80) {
     const font = `${fontSize}px sans`;
-    const threshold = 80; //from 0 to 255
 
     /* Compute and draw */
     this.clearFontContext();

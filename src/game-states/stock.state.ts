@@ -45,7 +45,7 @@ class StockState implements State {
       drawEngine.drawText(product, 10, 1, 1 + row, A_WHITE);
       drawEngine.drawText(`${stock}`, 10, 1, row + 11, A_WHITE);
 
-      ['-', '+'].map((s,i) => drawEngine.drawButton(
+      ['–', '+'].map((s,i) => drawEngine.drawButton(
         WIDTH - 60 + i*53,
         row + 5,
         this.selection === index ? 'white' : A_WHITE,

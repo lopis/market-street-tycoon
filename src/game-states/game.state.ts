@@ -7,7 +7,7 @@ import { createPlayStateMachine, playStateMachine } from '@/game-state-machine';
 // import { gameStateMachine } from '@/game-state-machine';
 // import { menuState } from '@/game-states/menu.state';
 
-class GameState implements State {
+export class GameState implements State {
 
   gameData: GameData;
 
@@ -20,5 +20,3 @@ class GameState implements State {
     playStateMachine.getState().onUpdate(timeElapsed);
   }
 }
-
-export const gameState = new GameState();
