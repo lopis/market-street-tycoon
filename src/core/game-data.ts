@@ -52,41 +52,48 @@ class GameData {
   money: number;
   stock: ProductValue = {};
   price: ProductValue = {};
-  demand: ProductValue = {};
-  marketPrice: ProductValue = {};
+  demand: ProductValue = {
+    'bread': 1,
+    'apples': 0.6,
+    'oil': 0.4,
+  };
+  marketPrice: ProductValue = {
+    'bread': 3,
+    'apples': 4,
+    'oil': 8,
+  };
+  spoilRate: ProductValue = {
+    'bread': 1,
+    'apples': 0.4,
+    'oil': 0,
+  };
   week = 1;
   history: HistoryEntry[] = [];
 
   constructor() {
-    this.money = 20;
+    this.money = 16;
     const bread: Supplier = {
       productName: 'bread',
       supplierName: nextName(),
-      price: 10,
-      stock: 10,
+      price: 16,
+      stock: 8,
     };
-    this.demand[bread.productName] = 0.6;
-    this.marketPrice[bread.productName] = 3;
     this.suppliers.push(bread);
 
     const apples: Supplier = {
       productName: 'apples',
       supplierName: nextName(),
-      price: 20,
-      stock: 24,
+      price: 16,
+      stock: 8,
     };
-    this.demand[apples.productName] = 0.5;
-    this.marketPrice[apples.productName] = 4;
     this.suppliers.push(apples);
 
     const oil: Supplier = {
       productName: 'oil',
       supplierName: nextName(),
-      price: 25,
-      stock: 10,
+      price: 22,
+      stock: 4,
     };
-    this.demand[oil.productName] = 0.3;
-    this.marketPrice[oil.productName] = 8;
     this.suppliers.push(oil);
   }
 

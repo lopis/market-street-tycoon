@@ -1,11 +1,12 @@
-import { startMarketMusic, stopMarketMusic } from '@/core/audio';
+import { startMarketMusic } from '@/core/audio';
 import { WIDTH, drawEngine } from '@/core/draw-engine';
-import GameData, { ProductValue, products } from '@/core/game-data';
+import GameData, { ProductType, ProductValue, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import RecapState from './recap.state';
 
-export const MARKET_TIME = 12000;
+export const MARKET_TIME = 10000;
+export const MARKET_CUSTOMERS = 20;
 
 export interface Person {
   height: number
@@ -45,17 +46,13 @@ class MarketState implements State {
         const price = this.gameData.price[product] || 1;
         const priceRatio =  marketPrice / price;
         const demand = this.gameData.demand[product] || 0;
-        const totalCustomers = 50;
+        const totalCustomers = MARKET_CUSTOMERS;
         // Product sold each milisecond
-        this.productDemand[product] = (priceRatio * demand * totalCustomers) / MARKET_TIME;
+        this.productDemand[product] = (priceRatio * demand) * totalCustomers / MARKET_TIME;
         this.productSales[product] = 0;
         console.log(priceRatio, demand);
       }
     });
-  }
-
-  onLeave() {
-    stopMarketMusic();
   }
 
   onUpdate(timeElapsed = 0) {
@@ -71,8 +68,10 @@ class MarketState implements State {
     if (this.time < MARKET_TIME) {
       this.time += timeElapsed;
       Object.entries(this.productDemand).forEach(([product, demand]) => {
-        // @ts-ignore - product is always valid key
-        this.productSales[product] += demand * timeElapsed;
+        const s = this.productSales[product as ProductType] || 0;
+        if (s < (this.gameData.stock[product as ProductType] || 0)) {
+          this.productSales[product as ProductType] = s + demand * timeElapsed;
+        }
       });
     }
 

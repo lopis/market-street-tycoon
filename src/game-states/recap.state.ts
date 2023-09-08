@@ -1,17 +1,18 @@
 import { controls } from '@/core/controls';
 import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
-import GameData, { ProductType } from '@/core/game-data';
+import GameData, { ProductType, ProductValue } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import BuyState from './buy.state';
 import { icons } from '@/core/icons';
-import { MARKET_TIME } from './market.state';
+import { MARKET_TIME, MARKET_CUSTOMERS } from './market.state';
 
 class RecapState implements State {
   gameData: GameData;
   selection = 0;
   curtainPos = 0;
   total = 0;
+  spoiled: ProductValue = {};
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -28,13 +29,16 @@ class RecapState implements State {
   onEnter() {
     const recap = this.gameData.history[this.gameData.week];
     Object.keys(recap.sales).map((product) => {
-      const s = recap.sales[product as ProductType] = Math.round(recap.sales[product as ProductType] || 0);
-      recap.demand[product as ProductType] = (recap.demand[product as ProductType] || 0) * MARKET_TIME / 50;
-      this.total += s * (this.gameData.price[product as ProductType] || 0);
-      this.gameData.stock[product as ProductType] = Math.max(
+      const sales = recap.sales[product as ProductType] = Math.round(recap.sales[product as ProductType] || 0);
+      recap.demand[product as ProductType] = (recap.demand[product as ProductType] || 0) * MARKET_TIME / MARKET_CUSTOMERS;
+      this.total += sales * (this.gameData.price[product as ProductType] || 0);
+      const stock = Math.max(
         0,
-        (this.gameData.stock[product as ProductType] || 0) - s
+        (this.gameData.stock[product as ProductType] || 0) - sales
       );
+      const spoiled = Math.floor((this.gameData.spoilRate[product as ProductType] || 0) * stock);
+      this.gameData.stock[product as ProductType] = stock - spoiled;
+      this.spoiled[product as ProductType] = spoiled;
     });
   }
 
@@ -53,15 +57,17 @@ class RecapState implements State {
     Object.entries(recap.sales).map((productSales, index) => {
       const product: ProductType = productSales[0] as ProductType;
       const sales: number = productSales[1];
-      const row = index * 36 + 24;
+      const row = index * 38 + 15;
 
       drawEngine.drawIcon(icons[product], 3, row);
-      drawEngine.drawText(`${product}  ${this.gameData.price[product]}$`, 10, 12, row, A_WHITE);
-      const d = Math.min(8, 8 * (recap.demand[product] || 0));
-      drawEngine.drawText(`Demand:  ${'█'.repeat(d)}${'░'.repeat(8 - d)}`, 10, 12, row + 12, A_WHITE);
+      const demandIcons = 10;
+      const d = Math.round(Math.min(demandIcons, demandIcons * (recap.demand[product] || 0)));
+      drawEngine.drawText(`${product}`, 10, 12, row, A_WHITE);
+      drawEngine.drawText(`Demand:  ${'▮'.repeat(d)}${'▯'.repeat(demandIcons - d)}`, 10, 2, row + 12, A_WHITE);
       const price = (this.gameData.price[product] || 0);
       const total = sales * price;
-      drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 12, row + 24, A_WHITE);
+      drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 2, row + 24, A_WHITE);
+      drawEngine.drawText(`Spoiled:  ${this.spoiled[product]}`, 10, 2, row + 36, A_WHITE);
     });
 
     if (this.curtainPos < 1) {

@@ -30,7 +30,7 @@ class StockState implements State {
     this.products = products.filter(product => {
       const stock = this.gameData.stock[product];
       if (!this.gameData.price[product]){
-        this.gameData.price[product] = 15;
+        this.gameData.price[product] = 1;
       }
       return !!stock;
     });
@@ -39,6 +39,17 @@ class StockState implements State {
   onUpdate(timeElapsed = 0) {
     drawEngine.drawOverlay(this.gameData.week);
     drawEngine.drawHeader('Manage stock', this.gameData);
+
+    if (!this.products.length) {
+      drawEngine.drawText(
+        'Your stock is empty',
+        12,
+        WIDTH / 2,
+        HEIGHT / 3,
+        A_WHITE,
+        'center'
+      );
+    }
 
     let index = 0;
     this.products
@@ -49,7 +60,7 @@ class StockState implements State {
       if (!stock) return;
 
       drawEngine.drawText(product, 10, 1, 1 + row, A_WHITE);
-      drawEngine.drawText(`${stock}`, 10, 1, row + 11, A_WHITE);
+      drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 13, A_WHITE);
 
       ['–', '+'].map((s,i) => drawEngine.drawButton(
         WIDTH - 60 + i*53,
@@ -91,7 +102,7 @@ class StockState implements State {
     const isRight = controls.isRight && !controls.previousState.isRight;
     if((isLeft || isRight)) {
       if (this.selection < Object.keys(this.gameData.stock).length) {
-        this.active = [this.selection, isLeft ? '-' : '+'];
+        this.active = [this.selection, isLeft ? '–' : '+'];
         setTimeout(() => {
           this.active = [-1, ''];
         }, 100);

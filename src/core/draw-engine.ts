@@ -68,7 +68,7 @@ class DrawEngine {
 
   // Adapted from https://github.com/xem/miniPixelFont
   // threshold from 0 to 255
-  drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 80) {
+  drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 70) {
     const font = `${fontSize}px sans`;
 
     /* Compute and draw */
@@ -294,19 +294,23 @@ class DrawEngine {
   }
 
   drawProducts(stock: ProductValue, productSales: ProductValue) {
-    Object.entries(stock).forEach(([type, amount], i) => {
+    const s = Object.entries(stock).filter(([, amount]) => !!amount);
+    s.forEach(([type, amount], i) => {
       // @ts-ignore -- type is a valid key
       const finalStock = Math.floor(amount - productSales[type]);
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);
+      const boxNumber = s.length === 3 ? i
+      : s.length === 1 ? 1
+      : i * 2;
       // @ts-ignore
       const max = Math.min(finalStock, perRow * Math.ceil(25 / icon.padding));
       for(let j = 0; j < max; j++) {
         const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
         this.drawIcon(
           icon,
-          37 + (j % perRow) * icon.padding + i * 30 + rowOffset,
+          37 + (j % perRow) * icon.padding + boxNumber * 30 + rowOffset,
           73 + Math.floor(j / perRow) * (icon.padding-1) - icon.y,
         );
       }

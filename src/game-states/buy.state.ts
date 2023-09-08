@@ -30,11 +30,11 @@ class BuyState implements State {
 
       drawEngine.drawIcon(icons[supplier.productName], 3, row + 6);
 
-      drawEngine.drawText(supplier.supplierName, 10, 12, 1 + row, A_WHITE);
-      const productLine = `${supplier.stock} ${supplier.productName}   ${supplier.price}$`;
+      drawEngine.drawText(supplier.supplierName, 10, 14, 1 + row, A_WHITE);
+      const productLine = `${supplier.stock}  ${supplier.productName}   ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
-        10, 12, row + 11, A_WHITE
+        10, 14, row + 11, A_WHITE
       );
 
       drawEngine.drawButton(
