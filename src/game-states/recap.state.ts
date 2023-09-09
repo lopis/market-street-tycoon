@@ -54,10 +54,21 @@ class RecapState implements State {
     );
 
     const recap = this.gameData.history[this.gameData.week];
-    Object.entries(recap.sales).map((productSales, index) => {
+    drawEngine.context.save();
+    drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
+    drawEngine.context.clip();
+    const recapSales = Object.entries(recap.sales);
+    const rowHeight = 12 * 5;
+    const scrollSpeed = 20;
+    const totalHeight = Math.max(0, recapSales.length - 2) * rowHeight;
+    if (this.selection > totalHeight / scrollSpeed) {
+      this.selection = Math.round(totalHeight / scrollSpeed);
+    }
+    drawEngine.context.translate(0, -this.selection * scrollSpeed);
+    recapSales.map((productSales, index) => {
+      const row = index * rowHeight + 15;
       const product: ProductType = productSales[0] as ProductType;
       const sales: number = productSales[1];
-      const row = index * 38 + 15;
 
       drawEngine.drawIcon(icons[product], 3, row);
       const demandIcons = 10;
@@ -69,6 +80,7 @@ class RecapState implements State {
       drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 2, row + 24, A_WHITE);
       drawEngine.drawText(`Spoiled:  ${this.spoiled[product]}`, 10, 2, row + 36, A_WHITE);
     });
+    drawEngine.context.restore();
 
     if (this.curtainPos < 1) {
       // Start, open curtains
@@ -76,10 +88,37 @@ class RecapState implements State {
       drawEngine.drawCurtains(this.curtainPos);
     }
 
+    if (recapSales.length > 2) {
+      // Scroll bar
+      const {width, height} = drawEngine.drawButton(
+        WIDTH - 10,
+        HEIGHT / 2 - 40,
+        A_WHITE,
+        '▲'
+      );
+      drawEngine.drawButton(
+        WIDTH - 10,
+        HEIGHT / 2 + 20,
+        A_WHITE,
+        '▼'
+      );
+      const scrollLength = 40 + 20 - height;
+      const scrollbarHeight = Math.floor(scrollLength * 2 / recapSales.length);
+      const scrollbarPosY = Math.round((scrollLength - scrollbarHeight) * this.selection / recapSales.length);
+      drawEngine.context.fillStyle = 'white';
+      drawEngine.context.fillRect(
+        WIDTH - 10 - width / 2,
+        HEIGHT / 2 - 40 + height + scrollbarPosY,
+        width,
+        scrollbarHeight
+      );
+    }
+
     this.updateControls();
   }
 
   updateControls() {
+    controls.updateSelection(this, 99);
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       this.gameData.week++;
       this.next();

@@ -21,21 +21,13 @@ class MenuState implements State {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
       drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, RED1, 'center', 100);
     });
-    drawEngine.drawText(
-      this.selection == 0 ? '▸ Start' : '  Start',
-      10, 10, 80,
-      this.selection == 0 ? 'white' : A_WHITE
-    );
-    drawEngine.drawText(
-      this.selection == 1 ? '▸ Fullscreen' : '  Fullscreen',
-      10, 10, 95,
-      this.selection == 1 ? 'white' : A_WHITE
-    );
-    drawEngine.drawText(
-      this.selection == 2 ? '▸ About' : '  About',
-      10, 10, 110,
-      this.selection == 2 ? 'white' : A_WHITE
-    );
+    ['New Game', 'Continue', 'FullScreen', 'Help', 'About'].map((s, i) => {
+      drawEngine.drawText(
+        `${this.selection == i ? '▸': ' '} ${s}`,
+        10, 10, 70 + i * 13,
+        this.selection == i ? 'white' : A_WHITE
+      );
+    });
   }
 
   renderHelp() {
@@ -93,15 +85,18 @@ class MenuState implements State {
   }
 
   updateControls() {
-    controls.updateSelection(this, 3);
+    controls.updateSelection(this, 4);
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      if (this.showAbout) {
+      if (this.showAbout || this.showHelp) {
         this.showAbout = false;
-      } else if (this.selection == 0) {
-        gameStateMachine.setState(new GameState());
-      } else if (this.selection == 1) {
+        this.showHelp = false;
+      } else if (this.selection <= 1) {
+        gameStateMachine.setState(new GameState(this.selection === 0));
+      } else if (this.selection == 2) {
         toggleFullscreen();
+      } else if (this.selection == 3) {
+        this.showHelp = true;
       } else {
         this.showAbout = true;
       }

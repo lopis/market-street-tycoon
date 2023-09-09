@@ -265,10 +265,13 @@ class DrawEngine {
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
     const width = text.length * 10;
+    const height = 13;
     this.context.translate(activeOffset, activeOffset);
-    this.context.fillRect(x - width/2, y, width, 13);
+    this.context.fillRect(x - width/2, y, width, height);
     this.drawText(text, 10, x, y + 2, BLACK, 'center');
     this.context.translate(-activeOffset, -activeOffset);
+
+    return {width, height};
   }
 
   // Adapted from https://xem.github.io/miniPixelArt/

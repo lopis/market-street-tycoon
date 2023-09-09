@@ -75,7 +75,7 @@ class GameData {
     const bread: Supplier = {
       productName: 'bread',
       supplierName: nextName(),
-      price: 16,
+      price: 0, //16,
       stock: 8,
     };
     this.suppliers.push(bread);
@@ -83,7 +83,7 @@ class GameData {
     const apples: Supplier = {
       productName: 'apples',
       supplierName: nextName(),
-      price: 16,
+      price: 0, //16,
       stock: 8,
     };
     this.suppliers.push(apples);
@@ -91,14 +91,31 @@ class GameData {
     const oil: Supplier = {
       productName: 'oil',
       supplierName: nextName(),
-      price: 22,
+      price: 0, //22,
       stock: 4,
     };
     this.suppliers.push(oil);
   }
 
+  loadSave() {
+    const save = localStorage.getItem('history');
+    if (!save) return;
+    const {history, suppliers, money, stock} = JSON.parse(save);
+    this.history = history;
+    this.suppliers = suppliers;
+    this.money = money;
+    this.stock = stock;
+    this.week = history.length;
+  }
+
   save(demand: ProductValue, sales: ProductValue) {
     this.history[this.week] = { demand, sales };
+    localStorage.setItem('history', JSON.stringify({
+      history: this.history,
+      suppliers: this.suppliers,
+      money: this.money,
+      stock: this.stock,
+    }));
   }
 }
 
