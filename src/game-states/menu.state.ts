@@ -3,6 +3,7 @@ import { A_WHITE, HEIGHT, RED1, WHITE1, WHITE2, WIDTH, drawEngine } from '@/core
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
+import { LOCALSTORAGE_KEY } from '@/core/game-data';
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -21,7 +22,11 @@ class MenuState implements State {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
       drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, RED1, 'center', 100);
     });
-    ['New Game', 'Continue', 'FullScreen', 'Help', 'About'].map((s, i) => {
+    const menu = ['New Game', 'Continue', 'FullScreen', 'Help', 'About'];
+    if (!localStorage.getItem(LOCALSTORAGE_KEY)) {
+      menu.splice(1, 1);
+    }
+    menu.map((s, i) => {
       drawEngine.drawText(
         `${this.selection == i ? '▸': ' '} ${s}`,
         10, 10, 70 + i * 13,

@@ -47,6 +47,8 @@ const nextName = () => {
   return n;
 };
 
+export const LOCALSTORAGE_KEY = 'market_street_tycoon_history';
+
 class GameData {
   suppliers: Supplier[] = [];
   money: number;
@@ -75,7 +77,7 @@ class GameData {
     const bread: Supplier = {
       productName: 'bread',
       supplierName: nextName(),
-      price: 0, //16,
+      price: 16,
       stock: 8,
     };
     this.suppliers.push(bread);
@@ -83,7 +85,7 @@ class GameData {
     const apples: Supplier = {
       productName: 'apples',
       supplierName: nextName(),
-      price: 0, //16,
+      price: 16,
       stock: 8,
     };
     this.suppliers.push(apples);
@@ -91,14 +93,14 @@ class GameData {
     const oil: Supplier = {
       productName: 'oil',
       supplierName: nextName(),
-      price: 0, //22,
+      price: 22,
       stock: 4,
     };
     this.suppliers.push(oil);
   }
 
   loadSave() {
-    const save = localStorage.getItem('history');
+    const save = localStorage.getItem(LOCALSTORAGE_KEY);
     if (!save) return;
     const {history, suppliers, money, stock} = JSON.parse(save);
     this.history = history;
@@ -108,14 +110,17 @@ class GameData {
     this.week = history.length;
   }
 
-  save(demand: ProductValue, sales: ProductValue) {
-    this.history[this.week] = { demand, sales };
-    localStorage.setItem('history', JSON.stringify({
+  save() {
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({
       history: this.history,
       suppliers: this.suppliers,
       money: this.money,
       stock: this.stock,
     }));
+  }
+
+  recordHistory(demand: ProductValue, sales: ProductValue){
+    this.history[this.week] = { demand, sales };
   }
 }
 

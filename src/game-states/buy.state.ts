@@ -23,6 +23,7 @@ class BuyState implements State {
     this.gameData.suppliers = this.gameData.suppliers.filter((supplier: Supplier) => {
       return supplier.stock > 0;
     });
+    this.gameData.save();
   }
 
   onUpdate() {

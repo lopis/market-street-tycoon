@@ -80,7 +80,7 @@ class MarketState implements State {
       if (this.curtainPos > 0) {
         this.curtainPos = Math.max(0, this.curtainPos - timeElapsed / 1000);
       } else {
-        this.gameData.save(this.productDemand, this.productSales);
+        this.gameData.recordHistory(this.productDemand, this.productSales);
         playStateMachine.setState(new RecapState(this.gameData));
       }
     } else if (this.curtainPos < 1) {
