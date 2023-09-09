@@ -94,22 +94,27 @@ class DrawEngine {
     }
   }
 
-  // https://rosettacode.org/wiki/Bitmap/Bresenham's_line_algorithm#JavaScript
   drawLine(x0: number, y0: number, x1: number, y1: number, color: string) {
+    // It's necessary to start from rounded coordinated
     let x = Math.round(x0);
     let y = Math.round(y0);
     x1 = Math.round(x1);
     y1 = Math.round(y1);
 
+    // Calculate the deltas
     let dx = x1 - x0;
     let dy = y1 - y0;
     let dmax = Math.max(Math.abs(dx), Math.abs(dy));
+    // Either dx or dy will equal 1
+    // and the other will be less than 1
     dx = dx / dmax;
     dy = dy / dmax;
 
     const points = [ ];
     this.context.fillStyle = color;
     while(dmax--) {
+      // The points won't have whole coordinated;
+      // We'll round them later.
       points.push([x, y]);
       x += dx;
       y += dy;
@@ -117,6 +122,7 @@ class DrawEngine {
 
     this.context.beginPath();
     points.map(([px, py]) => {
+      // We round the coordinates when drawing the pixel.
       this.context.rect(Math.round(px), Math.round(py), 1, 1);
     });
     this.context.fill();
@@ -269,17 +275,11 @@ class DrawEngine {
   drawIcon(icon: Icon, x: number, y: number) {
     const imageData: number[] = [];
 
-    // pixel decoding
-    icon.data.replace(
-      /./g,
-      // @ts-ignore - we don't care about returning a value from this.
-      a => {
-        // @ts-ignore
-        const z = a.charCodeAt();
-        imageData.push(z&7);
-        imageData.push((z>>3)&7);
-      }
-    );
+    [...icon.data].map(c => {
+      const z = c.charCodeAt(0);
+      imageData.push(z&7);
+      imageData.push((z>>3)&7);
+    });
 
     // drawing
     for (let j = 0; j < icon.size; j++) {
@@ -354,15 +354,15 @@ class DrawEngine {
   }
 
   drawClock(time: number) {
-    this.context.beginPath();
-    this.context.fillStyle = WHITE2;
-    this.drawCircle(WIDTH / 2, 8, 7);
-    this.context.fill();
-    const angle = 2 * Math.PI * time / MARKET_TIME - Math.PI/2;
-    const xc = WIDTH / 2;
-    const yc = 8;
-    const r = 6;
-    this.drawLine(xc, yc, xc + r * Math.cos(angle), yc + r * Math.sin(angle), BLACK);
+this.context.beginPath();
+this.context.fillStyle = WHITE2;
+this.drawCircle(WIDTH / 2, 8, 7);
+this.context.fill();
+const angle = 2 * Math.PI * time / MARKET_TIME - Math.PI/2;
+const xc = WIDTH / 2;
+const yc = 8;
+const r = 6;
+this.drawLine(xc, yc, xc + r * Math.cos(angle), yc + r * Math.sin(angle), BLACK);
   }
 
   drawFPS() {
