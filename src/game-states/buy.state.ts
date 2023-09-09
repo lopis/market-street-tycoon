@@ -1,6 +1,6 @@
 import { controls } from '@/core/controls';
 import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
-import GameData from '@/core/game-data';
+import GameData, { Supplier } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import StockState from './stock.state';
@@ -17,6 +17,12 @@ class BuyState implements State {
 
   next() {
     playStateMachine.setState(new StockState(this.gameData));
+  }
+
+  onEnter() {
+    this.gameData.suppliers = this.gameData.suppliers.filter((supplier: Supplier) => {
+      return supplier.stock > 0;
+    });
   }
 
   onUpdate() {
