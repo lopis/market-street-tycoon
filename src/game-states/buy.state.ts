@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, GREEN, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -11,6 +11,7 @@ class BuyState implements State {
   selection = 0;
   active = -1;
   isGoingBack = false;
+  totalTime = 0;
 
   constructor(gameData: GameData, isGoingBack = false) {
     this.gameData = gameData;
@@ -29,7 +30,8 @@ class BuyState implements State {
     }
   }
 
-  onUpdate() {
+  onUpdate(timeElapsed = 0) {
+    this.totalTime += timeElapsed;
     drawEngine.drawOverlay(this.gameData.week);
 
     drawEngine.drawHeader('Suppliers', this.gameData);
@@ -62,6 +64,14 @@ class BuyState implements State {
       this.selection === this.gameData.suppliers.length ? 'white' : A_WHITE,
       'next',
     );
+
+    if (this.gameData.week > 1 && this.totalTime > 500 && this.totalTime < 3000) {
+      drawEngine.drawText(
+        'Game saved',
+        10, 5, HEIGHT - 12,
+        GREEN
+      );
+    }
 
     this.updateControls();
   }

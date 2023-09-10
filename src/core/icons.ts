@@ -33,5 +33,35 @@ export const icons: {[Property in ProductType]: Icon} = {
     size: 8,
     padding: 8,
     y: -1,
+  },
+  'pies': {
+    data: '@@@@xGojjzWUU}xG@@@@',
+    size: 8,
+     padding: 9,
+     y: 0,
+  },
+  'ceramics': {
+    data: 'PRRB@RR@PRRBQRRJJIIQRRRRQRRJHIIA',
+    size: 8,
+    padding: 9,
+    y: -1,
+  },
+  'gems': {
+    data: '@@@@`d@hdlh`dhE@@EE@E@mE@',
+    size: 7,
+    padding: 10,
+    y: -1,
+  },
+  'spice': {
+    data: '@@@@@PG@@Rz@PRWGRRzzPRWG@@@@@@@@',
+    size: 8,
+    padding: 8,
+    y: -1,
+  },
+  'eggs': {
+    data: 'hEhmEmmhmEhE@',
+    size: 5,
+    padding: 5,
+    y: 0,
   }
 };

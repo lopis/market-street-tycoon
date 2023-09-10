@@ -36,17 +36,31 @@ class MenuState implements State {
   }
 
   renderHelp() {
+    drawEngine.context.save();
+    drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 30);
+    drawEngine.context.clip();
+    drawEngine.context.translate(0, -this.selection * 6);
     this.renderText([
       'You\'re a merchant in the',
-      ' village market, trying to',
-      ' succed. Buy goods from the',
-      ' region and resell them for',
-      ' the best price, depending',
-      ' on customer demand.',
+      'village market, trying to',
+      'succed. Buy goods from the',
+      'region and resell them for',
+      'the best price, depending',
+      'on customer demand.',
+      'Your reputation increases',
+      'the more you sell each item',
+      'and unlocks new suppliers.',
       '',
       'Use the arrow keys and Enter',
       ' to control the game.',
     ]);
+    drawEngine.context.restore();
+    drawEngine.drawButton(
+      WIDTH / 2,
+      HEIGHT - 15,
+      WHITE1,
+      'return',
+    );
   }
 
   renderAbout() {
@@ -59,6 +73,12 @@ class MenuState implements State {
       '',
       '♥',
     ], 13);
+    drawEngine.drawButton(
+      WIDTH / 2,
+      HEIGHT - 15,
+      WHITE1,
+      'return',
+    );
   }
 
   renderText(lines: string[], fontSize = 9){
@@ -71,12 +91,6 @@ class MenuState implements State {
         100
       );
     });
-    drawEngine.drawButton(
-      WIDTH / 2,
-      HEIGHT - 15,
-      WHITE1,
-      'return',
-    );
   }
 
   onUpdate() {
@@ -90,10 +104,11 @@ class MenuState implements State {
   }
 
   updateControls() {
-    controls.updateSelection(this, 4);
+    controls.updateSelection(this, this.showAbout || this.showHelp ? 100 : 4);
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
       if (this.showAbout || this.showHelp) {
+        this.selection = 0;
         this.showAbout = false;
         this.showHelp = false;
       } else if (this.selection <= 1) {
@@ -101,8 +116,10 @@ class MenuState implements State {
       } else if (this.selection == 2) {
         toggleFullscreen();
       } else if (this.selection == 3) {
+        this.selection = 0;
         this.showHelp = true;
       } else {
+        this.selection = 0;
         this.showAbout = true;
       }
     }

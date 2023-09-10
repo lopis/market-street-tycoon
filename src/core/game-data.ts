@@ -4,6 +4,11 @@ export const products = <const> [
   'bread',
   'oil',
   'wood',
+  'eggs',
+  'pies',
+  'ceramics',
+  'gems',
+  'spice',
 ];
 
 export type ProductType = typeof products[number]
@@ -71,20 +76,30 @@ class GameData {
   demand: ProductValue = {
     'bread': 1,
     'apples': 0.6,
-    'oil': 0.4,
+    'oil': 0.5,
     'wood': 1,
+    'ceramics': 0.5,
+    'pies': 0.8,
+    'gems': 0.8,
+    'spice': 1,
   };
   marketPrice: ProductValue = {
     'bread': 6,
     'apples': 8,
     'oil': 16,
     'wood': 3,
+    'ceramics': 20,
+    'pies': 10,
+    'gems': 30,
   };
   spoilRate: ProductValue = {
     'bread': 1,
     'apples': 0.4,
     'oil': 0,
     'wood': 0,
+    'ceramics': 0,
+    'pies': 1,
+    'gems': 0,
   };
   week = 1;
   history: HistoryEntry[] = [];
@@ -98,13 +113,13 @@ class GameData {
   seedSuppliers() {
     this.suppliers = [
       {
-        productName: 'bread',
+        productName: 'apples',
         supplierName: nextName(),
         price: 15,
-        stock: 5,
+        stock: 6,
       },
       {
-        productName: 'apples',
+        productName: 'bread',
         supplierName: nextName(),
         price: 15,
         stock: 5,
@@ -137,6 +152,24 @@ class GameData {
         supplierName: nextName(),
         price: this.money,
         stock: Math.ceil(this.money / 2),
+      });
+    }
+
+    while (this.suppliers.length < 3) {
+      const possibleProduct : ProductType[] = ['apples', 'bread', 'oil', 'wood'];
+      // @ts-ignore -- it's ok if they are undefined, this still works.
+      if(this.reputation['apples'] > 3 && this.reputation['bread'] > 3 && this.reputation['oil'] > 3) {
+        possibleProduct.push('pies');
+      }
+      const product = possibleProduct[Math.floor(Math.random() * (possibleProduct.length - 0.01))];
+      const reputation = this.reputation[product] || 0;
+      const multiplier = 15 * reputation / 100;
+      const stock = Math.round(multiplier * Math.random() + 5);
+      this.suppliers.push({
+        productName: product,
+        supplierName: nextName(),
+        price: stock * (this.marketPrice[product] || 1),
+        stock: stock,
       });
     }
   }
