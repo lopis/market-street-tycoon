@@ -6,6 +6,7 @@ import { playStateMachine } from '@/game-state-machine';
 import BuyState from './buy.state';
 import { icons } from '@/core/icons';
 import { MARKET_TIME, MARKET_CUSTOMERS } from './market.state';
+import { trigger } from '@/core/events';
 
 class RecapState implements State {
   gameData: GameData;
@@ -63,6 +64,12 @@ class RecapState implements State {
           'center'
         );
       });
+      drawEngine.drawButton(
+        WIDTH / 2,
+        HEIGHT - 15,
+        'white',
+        'return'
+      );
     } else {
 
       drawEngine.drawButton(
@@ -144,6 +151,9 @@ class RecapState implements State {
   updateControls() {
     controls.updateSelection(this, 99);
     if (controls.isConfirm && !controls.previousState.isConfirm) {
+      if (this.gameData.money === 0) {
+        trigger('restart');
+      }
       this.gameData.week++;
       this.next();
     }

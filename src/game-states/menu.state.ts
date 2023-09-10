@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { A_WHITE, HEIGHT, RED1, WHITE1, WHITE2, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
@@ -20,7 +20,7 @@ class MenuState implements State {
 
   renderMenu() {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
-      drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, RED1, 'center', 100);
+      drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, YELLOW, 'center', 100);
     });
     const menu = ['New Game', 'Continue', 'FullScreen', 'Help', 'About'];
     if (!localStorage.getItem(LOCALSTORAGE_KEY)) {

@@ -105,7 +105,7 @@ class GameData {
   history: HistoryEntry[] = [];
 
   constructor() {
-    this.money = 16;
+    this.money = 15;
     shuffleNames();
     this.seedSuppliers();
   }
