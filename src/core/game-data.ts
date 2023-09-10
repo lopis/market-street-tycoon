@@ -158,8 +158,20 @@ class GameData {
     while (this.suppliers.length < 3) {
       const possibleProduct : ProductType[] = ['apples', 'bread', 'oil', 'wood'];
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if(this.reputation['apples'] > 3 && this.reputation['bread'] > 3 && this.reputation['oil'] > 3) {
+      if(this.reputation['apples'] > 3 && this.reputation['bread'] > 3 && this.reputation['eggs'] > 3) {
         possibleProduct.push('pies');
+      }
+      if(Object.values(this.reputation).some(r => r > 4)) {
+        possibleProduct.push('ceramics');
+        possibleProduct.push('spice');
+      }
+      // @ts-ignore -- it's ok if they are undefined, this still works.
+      if (this.reputation['ceramics'] > 3) {
+        possibleProduct.push('gems');
+      }
+      // @ts-ignore -- it's ok if they are undefined, this still works.
+      if (this.reputation['gems'] > 3) {
+        possibleProduct.push('gems');
       }
       const product = possibleProduct[Math.floor(Math.random() * (possibleProduct.length - 0.01))];
       const reputation = this.reputation[product] || 0;
