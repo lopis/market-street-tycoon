@@ -5,6 +5,7 @@ import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import MarketState from './market.state';
 import BuyState from './buy.state';
+import { icons } from '@/core/icons';
 
 class StockState implements State {
   gameData: GameData;
@@ -55,15 +56,30 @@ class StockState implements State {
     }
 
     let index = 0;
+    drawEngine.context.save();
+    drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
+    drawEngine.context.clip();
+    const rowHeight = 12 * 4;
+    drawEngine.context.translate(
+      0,
+      -Math.max(0, Math.min(this.products.length - 2, this.selection)) * rowHeight
+    );
     this.products
     .forEach((product) => {
-      const row = index * 24 + 24;
+      const row = index * rowHeight + 15;
       const stock = this.gameData.stock[product];
 
       if (!stock) return;
 
-      drawEngine.drawText(product, 10, 1, 1 + row, A_WHITE);
-      drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 13, A_WHITE);
+      drawEngine.drawIcon(icons[product], 3, row + 1);
+      drawEngine.drawText(product, 10, 14, row + 1, A_WHITE);
+      drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 12, A_WHITE);
+      const reputation =  1 + Math.round(4 * (this.gameData.reputation[product] || 0) / 100);
+      drawEngine.drawText(
+        `Reputation: ${'★'.repeat(reputation)}${'✩'.repeat(5 - reputation)}`,
+        10, 1, row + 24,
+        A_WHITE
+      );
 
       ['–', '+'].map((s,i) => drawEngine.drawButton(
         WIDTH - 60 + i*53,
@@ -80,6 +96,7 @@ class StockState implements State {
       );
       index++;
     });
+    drawEngine.context.restore();
 
     !this.isStockEmpty && drawEngine.drawButton(
       WIDTH - 30,

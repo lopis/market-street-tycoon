@@ -39,6 +39,9 @@ class RecapState implements State {
       const spoiled = Math.floor((this.gameData.spoilRate[product as ProductType] || 0) * stock);
       this.gameData.stock[product as ProductType] = stock - spoiled;
       this.spoiled[product as ProductType] = spoiled;
+      this.gameData.reputation[product as ProductType] = (
+        (this.gameData.reputation[product as ProductType] || 0) + sales
+      );
     });
   }
 
@@ -47,7 +50,7 @@ class RecapState implements State {
     drawEngine.drawHeader('Summary', this.gameData, this.total);
 
     drawEngine.drawButton(
-      WIDTH / 2,
+      WIDTH - 30,
       HEIGHT - 15,
       'white',
       'next'
@@ -78,7 +81,11 @@ class RecapState implements State {
       const price = (this.gameData.price[product] || 0);
       const total = sales * price;
       drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 2, row + 24, A_WHITE);
-      drawEngine.drawText(`Spoiled:  ${this.spoiled[product]}`, 10, 2, row + 36, A_WHITE);
+      drawEngine.drawText(
+        `Spoiled:  ${this.gameData.spoilRate[product] ? this.spoiled[product] : 'does not spoil'}`,
+        10, 2, row + 36,
+        A_WHITE
+      );
     });
     drawEngine.context.restore();
 

@@ -1,13 +1,13 @@
 import { MARKET_TIME, Person } from '@/game-states/market.state';
 import GameData, { ProductValue } from './game-data';
-import { Icon, PALETTE, icons } from './icons';
+import { Icon, icons } from './icons';
 import { easeInOutSine } from './util';
 
 export const HEIGHT = 144;
 export const WIDTH = 160;
 
 export const RED1 = '#c3472c',
-RED2 = '#752a1a',
+RED2 = '#631909',
 WHITE1 = '#ffeae0',
 WHITE2 = '#f7cebd',
 BROWN1 = '#b77e62',
@@ -15,10 +15,27 @@ BROWN2 = '#6d412e',
 BLUE = '#1155bb',
 PURPLE = '#4621ac',
 GREEN = '#17812e',
+YELLOW = '#ea0',
 GRAY = '#7d736e',
 A_WHITE = '#FFFFFF88',
 A_BLACK = '#00000088',
 BLACK = '#322722';
+
+export const PALETTE = [
+  '533', // black
+  'c42', // red
+  '2c4', // green
+  '15b', // blue
+  'ea0', // yellow
+  'ddd', // white
+  '642', // brown
+].join('');
+
+const shorterMoney = (money: number) => {
+  return money < 1000 ? money
+  : money < 1000000 ? `${Math.round(money / 100) / 10}k`
+  : `${Math.round(money / 1000000) / 10}M`;
+};
 
 class DrawEngine {
   //   context.strokeStyle = 'black';
@@ -129,7 +146,7 @@ class DrawEngine {
   }
 
   drawOverlay(week: number) {
-    const colors = [PURPLE, BLACK, RED2, GREEN, BLUE];
+    const colors = [PURPLE, RED2, GREEN, BLUE];
     this.context.fillStyle = colors[week % colors.length];
     this.context.fillRect(0, 0, WIDTH, HEIGHT);
   }
@@ -138,7 +155,8 @@ class DrawEngine {
     this.context.fillStyle = A_BLACK;
     this.context.fillRect(0, 0, WIDTH, 12);
     this.drawText(`Week ${gameData.week} - ${title}`, 10, 1, 1, RED1);
-    this.drawText(`${gameData.money}$`, 10, WIDTH, 1, GREEN, 'right');
+    const money = shorterMoney(gameData.money);
+    this.drawText(`${money}$`, 10, WIDTH, 1, GREEN, 'right');
     if (total != -1) {
       this.drawText(`+ ${total}$`, 10, WIDTH, 13, GREEN, 'right');
     }
@@ -300,7 +318,7 @@ class DrawEngine {
     const s = Object.entries(stock).filter(([, amount]) => !!amount);
     s.forEach(([type, amount], i) => {
       // @ts-ignore -- type is a valid key
-      const finalStock = Math.floor(amount - productSales[type]);
+      const finalStock = Math.ceil(amount - productSales[type]);
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);

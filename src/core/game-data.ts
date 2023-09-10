@@ -67,26 +67,30 @@ class GameData {
   money: number;
   stock: ProductValue = {};
   price: ProductValue = {};
+  reputation: ProductValue = {};
   demand: ProductValue = {
     'bread': 1,
     'apples': 0.6,
     'oil': 0.4,
+    'wood': 1,
   };
   marketPrice: ProductValue = {
     'bread': 3,
     'apples': 4,
     'oil': 8,
+    'wood': 2,
   };
   spoilRate: ProductValue = {
     'bread': 1,
     'apples': 0.4,
     'oil': 0,
+    'wood': 0,
   };
   week = 1;
   history: HistoryEntry[] = [];
 
   constructor() {
-    this.money = 16;
+    this.money = 1;
     shuffleNames();
     this.seedSuppliers();
   }
@@ -112,6 +116,12 @@ class GameData {
         stock: 4,
       }
     ];
+  }
+
+  removeSuppliers() {
+    this.suppliers = this.suppliers.filter((supplier: Supplier) => {
+      return supplier.stock > 0;
+    });
   }
 
   createSupplier() {

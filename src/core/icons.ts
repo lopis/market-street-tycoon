@@ -2,16 +2,6 @@
 
 import { ProductType } from './game-data';
 
-export const PALETTE = [
-  '322',
-  'c42',
-  '2c4',
-  '15b',
-  'ea0',
-  'ddd',
-  '642',
-].join('');
-
 export type Icon = {
   data: string
   size: number
@@ -39,9 +29,9 @@ export const icons: {[Property in ProductType]: Icon} = {
     y: -1,
   },
   'wood': {
-    data: '@II@HAHAHAHo}AH}oAHo}A@II@',
+    data: '@II@HIIAHIIAHAxmmGx}oGxmmG@@',
     size: 8,
     padding: 8,
-    y: 0,
+    y: -1,
   }
 };
