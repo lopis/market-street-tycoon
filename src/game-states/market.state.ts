@@ -46,9 +46,10 @@ class MarketState implements State {
         const price = this.gameData.price[product] || 1;
         const priceRatio =  marketPrice / price;
         const demand = this.gameData.demand[product] || 0;
+        const reputation = Math.max(0.2, (this.gameData.reputation[product] || 0) / 100);
         const totalCustomers = MARKET_CUSTOMERS;
         // Product sold each milisecond
-        this.productDemand[product] = (priceRatio * demand) * totalCustomers / MARKET_TIME;
+        this.productDemand[product] = (priceRatio * demand * reputation) * totalCustomers / MARKET_TIME;
         this.productSales[product] = 0;
         console.log(priceRatio, demand);
       }

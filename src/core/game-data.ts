@@ -75,10 +75,10 @@ class GameData {
     'wood': 1,
   };
   marketPrice: ProductValue = {
-    'bread': 3,
-    'apples': 4,
-    'oil': 8,
-    'wood': 2,
+    'bread': 6,
+    'apples': 8,
+    'oil': 16,
+    'wood': 3,
   };
   spoilRate: ProductValue = {
     'bread': 1,
@@ -90,7 +90,7 @@ class GameData {
   history: HistoryEntry[] = [];
 
   constructor() {
-    this.money = 1;
+    this.money = 16;
     shuffleNames();
     this.seedSuppliers();
   }
@@ -100,19 +100,19 @@ class GameData {
       {
         productName: 'bread',
         supplierName: nextName(),
-        price: 16,
-        stock: 8,
+        price: 15,
+        stock: 5,
       },
       {
         productName: 'apples',
         supplierName: nextName(),
-        price: 16,
-        stock: 8,
+        price: 15,
+        stock: 5,
       },
       {
         productName: 'oil',
         supplierName: nextName(),
-        price: 22,
+        price: 64,
         stock: 4,
       }
     ];
