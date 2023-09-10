@@ -13,13 +13,14 @@ class StockState implements State {
   private products: ProductType[] = [];
   curtainPos = 2;
   backSelected = false;
+  isStockEmpty = false;
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
   }
 
   back() {
-    playStateMachine.setState(new BuyState(this.gameData));
+    playStateMachine.setState(new BuyState(this.gameData, true));
   }
 
   next() {
@@ -34,13 +35,15 @@ class StockState implements State {
       }
       return !!stock;
     });
+    this.isStockEmpty = !this.products.length;
+    this.backSelected = this.isStockEmpty;
   }
 
   onUpdate(timeElapsed = 0) {
     drawEngine.drawOverlay(this.gameData.week);
     drawEngine.drawHeader('Manage stock', this.gameData);
 
-    if (!this.products.length) {
+    if (this.isStockEmpty) {
       drawEngine.drawText(
         'Your stock is empty',
         12,
@@ -69,11 +72,16 @@ class StockState implements State {
         s,
         this.active[0] === index && this.active[1] === s,
       ));
-      drawEngine.drawText(`${this.gameData.price[product as ProductType]}$`, 10, WIDTH - 33, row + 7, A_WHITE, 'center');
+      drawEngine.drawText(
+        `${this.gameData.price[product as ProductType]}$`,
+        10, WIDTH - 33, row + 7,
+        A_WHITE,
+        'center'
+      );
       index++;
     });
 
-    drawEngine.drawButton(
+    !this.isStockEmpty && drawEngine.drawButton(
       WIDTH - 30,
       HEIGHT - 15,
       !this.backSelected && this.selection === this.products.length ? 'white' : A_WHITE,

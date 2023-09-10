@@ -3,7 +3,7 @@
 import { ProductType } from './game-data';
 
 export const PALETTE = [
-  '000',
+  '322',
   'c42',
   '2c4',
   '15b',
@@ -38,4 +38,10 @@ export const icons: {[Property in ProductType]: Icon} = {
     padding: 9,
     y: -1,
   },
+  'wood': {
+    data: '@II@HAHAHAHo}AH}oAHo}A@II@',
+    size: 8,
+    padding: 8,
+    y: 0,
+  }
 };

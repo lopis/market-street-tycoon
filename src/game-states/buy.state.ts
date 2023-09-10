@@ -10,9 +10,11 @@ class BuyState implements State {
   gameData: GameData;
   selection = 0;
   active = -1;
+  isGoingBack = false;
 
-  constructor(gameData: GameData) {
+  constructor(gameData: GameData, isGoingBack = false) {
     this.gameData = gameData;
+    this.isGoingBack = isGoingBack;
   }
 
   next() {
@@ -24,6 +26,9 @@ class BuyState implements State {
       return supplier.stock > 0;
     });
     this.gameData.save();
+    if (!this.isGoingBack) {
+      this.gameData.createSupplier();
+    }
   }
 
   onUpdate() {
@@ -33,7 +38,7 @@ class BuyState implements State {
 
     this.gameData.suppliers
     .forEach((supplier, index) => {
-      const row = index * 24 + 24;
+      const row = index * 28 + 15;
 
       drawEngine.drawIcon(icons[supplier.productName], 3, row + 6);
 

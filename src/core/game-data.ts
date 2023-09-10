@@ -2,7 +2,8 @@
 export const products = <const> [
   'apples',
   'bread',
-  'oil'
+  'oil',
+  'wood',
 ];
 
 export type ProductType = typeof products[number]
@@ -21,7 +22,7 @@ type HistoryEntry = {
   sales: ProductValue
 }
 
-const names = [
+let names = [
   'Catarina',
   'Leonor',
   'Bento',
@@ -39,6 +40,18 @@ const names = [
   'Luciana',
   'Gil',
 ];
+
+const shuffleNames = () => {
+  const ns = new Array(names.length);
+  while (names.length != 0) {
+    let r = Math.round(Math.random() * (ns.length - 1));
+    while(ns[r]) {
+      r = (r + 1) % ns.length;
+    }
+    ns[r] = names.pop();
+  }
+  names = ns;
+};
 
 const nextName = () => {
   const n : string = names.pop() as string;
@@ -74,29 +87,48 @@ class GameData {
 
   constructor() {
     this.money = 16;
-    const bread: Supplier = {
-      productName: 'bread',
-      supplierName: nextName(),
-      price: 16,
-      stock: 8,
-    };
-    this.suppliers.push(bread);
+    shuffleNames();
+    this.seedSuppliers();
+  }
 
-    const apples: Supplier = {
-      productName: 'apples',
-      supplierName: nextName(),
-      price: 16,
-      stock: 8,
-    };
-    this.suppliers.push(apples);
+  seedSuppliers() {
+    this.suppliers = [
+      {
+        productName: 'bread',
+        supplierName: nextName(),
+        price: 16,
+        stock: 8,
+      },
+      {
+        productName: 'apples',
+        supplierName: nextName(),
+        price: 16,
+        stock: 8,
+      },
+      {
+        productName: 'oil',
+        supplierName: nextName(),
+        price: 22,
+        stock: 4,
+      }
+    ];
+  }
 
-    const oil: Supplier = {
-      productName: 'oil',
-      supplierName: nextName(),
-      price: 22,
-      stock: 4,
-    };
-    this.suppliers.push(oil);
+  createSupplier() {
+    // Checks if the player is so broke that
+    // all suppliers are too expensive.
+    const isBroke = !this.suppliers.some(supplier => {
+      return this.money >= supplier.price;
+    });
+
+    if (isBroke) {
+      this.suppliers.push({
+        productName: 'wood',
+        supplierName: nextName(),
+        price: this.money,
+        stock: Math.ceil(this.money / 2),
+      });
+    }
   }
 
   loadSave() {
