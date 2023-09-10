@@ -326,14 +326,18 @@ class DrawEngine {
       : s.length === 1 ? 1
       : i * 2;
       // @ts-ignore
-      const max = Math.min(finalStock, perRow * Math.ceil(25 / icon.padding));
-      for(let j = 0; j < max; j++) {
-        const rowOffset = icon.padding < 7 ? (Math.floor(j/perRow) % 2) * icon.padding/2 : 0;
+      const maxPerBox = Math.min(finalStock, perRow * Math.ceil(25 / icon.padding));
+      for(let j = 0; j < finalStock; j++) {
+        const productLevel = Math.floor(j / maxPerBox);
         this.drawIcon(
           icon,
-          37 + (j % perRow) * icon.padding + boxNumber * 30 + rowOffset,
-          73 + Math.floor(j / perRow) * (icon.padding-1) - icon.y,
+          37 + (j % perRow) * icon.padding + boxNumber * 30 + icon.padding * 0.5 * (productLevel % 2),
+          90 - (Math.floor((j % maxPerBox) / perRow)) * (icon.padding-1) - icon.y - productLevel * icon.padding,
         );
+        if (j && j % maxPerBox == 0) {
+          this.context.fillStyle = BROWN1;
+          this.context.fillRect(37 + boxNumber * 30, 74 - productLevel * icon.size, 26, 23);
+        }
       }
     });
   }

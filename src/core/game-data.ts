@@ -72,7 +72,7 @@ class GameData {
   money: number;
   stock: ProductValue = {};
   price: ProductValue = {};
-  reputation: ProductValue = {};
+  reputation: ProductValue = {apples: 50};
   demand: ProductValue = {
     'bread': 1,
     'apples': 0.6,
@@ -116,7 +116,7 @@ class GameData {
         productName: 'apples',
         supplierName: nextName(),
         price: 15,
-        stock: 6,
+        stock: 60,
       },
       {
         productName: 'bread',
