@@ -15,9 +15,11 @@ class RecapState implements State {
   curtainPos = 0;
   total = 0;
   spoiled: ProductValue = {};
+  productsForSale: ProductType[] = [];
 
-  constructor(gameData: GameData) {
+  constructor(gameData: GameData, productsForSale: ProductType[]) {
     this.gameData = gameData;
+    this.productsForSale = productsForSale;
   }
 
   next() {
@@ -30,7 +32,7 @@ class RecapState implements State {
 
   onEnter() {
     const recap = this.gameData.history[this.gameData.week];
-    Object.keys(recap.sales).map((product) => {
+    this.productsForSale.map((product) => {
       const sales = recap.sales[product as ProductType] = Math.round(recap.sales[product as ProductType] || 0);
       recap.demand[product as ProductType] = (recap.demand[product as ProductType] || 0) * MARKET_TIME / MARKET_CUSTOMERS;
       this.total += sales * (this.gameData.price[product as ProductType] || 0);

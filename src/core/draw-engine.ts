@@ -314,9 +314,9 @@ class DrawEngine {
     }
   }
 
-  drawProducts({ stock, price }: GameData, productSales: ProductValue) {
-    const s = Object.entries(stock).filter(([product, amount], i) => {
-      return amount && price[product as ProductType] && i < 3;
+  drawProducts({ stock }: GameData, productSales: ProductValue, productsForSale: ProductType[]) {
+    const s = Object.entries(stock).filter(([product, amount]) => {
+      return amount && productsForSale.includes(product as ProductType);
     });
     s.forEach(([type, amount], i) => {
       // @ts-ignore -- type is a valid key

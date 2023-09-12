@@ -186,24 +186,30 @@ class GameData {
       const reputation = this.reputation[product] || 0;
       const multiplier = 15 * reputation / 100;
       const stock = Math.round(multiplier * Math.random() + 5);
+      const price = Math.round(stock * (this.marketPrice[product] || 1) * (0.6 + 0.6 * Math.random()));
       this.suppliers.push({
         productName: product,
         supplierName: nextName(),
-        price: Math.round(stock * (this.marketPrice[product] || 1) * (0.3 * Math.random() + 0.5)),
+        price: price,
         stock: stock,
       });
+      console.log(product, stock, price, this.marketPrice[product]);
+
     }
   }
 
   loadSave() {
     const save = localStorage.getItem(LOCALSTORAGE_KEY);
     if (!save) return;
-    const {history, suppliers, money, stock} = JSON.parse(save);
+    const {history, suppliers, money, stock, reputation, avgCost, price, week} = JSON.parse(save);
     this.history = history;
     this.suppliers = suppliers;
     this.money = money;
     this.stock = stock;
-    this.week = history.length;
+    this.reputation = reputation;
+    this.avgCost = avgCost;
+    this.price = price;
+    this.week = week;
   }
 
   save() {
@@ -212,6 +218,10 @@ class GameData {
       suppliers: this.suppliers,
       money: this.money,
       stock: this.stock,
+      reputation: this.reputation,
+      avgCost: this.avgCost,
+      price: this.price,
+      week: this.week,
     }));
   }
 

@@ -5,7 +5,7 @@ import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import RecapState from './recap.state';
 
-export const MARKET_TIME = 10000;
+export const MARKET_TIME = 1000;
 export const MARKET_CUSTOMERS = 20;
 
 export interface Person {
@@ -19,6 +19,7 @@ class MarketState implements State {
   people: Person[] = [];
   productDemand: ProductValue = {};
   productSales: ProductValue = {};
+  productsForSale: ProductType[] = [];
   curtainPos = 0;
   time = 0;
 
@@ -38,6 +39,11 @@ class MarketState implements State {
 
   onEnter() {
     startMarketMusic();
+    this.productsForSale = products.filter((product) => {
+      const price = this.gameData.price[product] || 0;
+      const stock = this.gameData.stock[product] || 0;
+      return price > 0 && stock > 0;
+    }).slice(0, 3);
     products.map(product => {
       const stock = this.gameData.stock[product];
       if (stock) {
@@ -59,7 +65,7 @@ class MarketState implements State {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
-    drawEngine.drawProducts(this.gameData, this.productSales);
+    drawEngine.drawProducts(this.gameData, this.productSales, this.productsForSale);
     drawEngine.drawState(this.gameData, this.productSales);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
@@ -67,8 +73,9 @@ class MarketState implements State {
 
     if (this.time < MARKET_TIME) {
       this.time += timeElapsed;
-      Object.entries(this.gameData.stock).forEach(([product], i) => {
-        if (!this.gameData.price[product as ProductType] || i > 2) {
+      this.productsForSale.forEach((product) => {
+        if (!this.gameData.price[product as ProductType]) {
+          debugger;
           return;
         }
         const demand = this.productDemand[product as ProductType] || 0;
@@ -85,7 +92,7 @@ class MarketState implements State {
         this.curtainPos = Math.max(0, this.curtainPos - timeElapsed / 1000);
       } else {
         this.gameData.recordHistory(this.productDemand, this.productSales);
-        playStateMachine.setState(new RecapState(this.gameData));
+        playStateMachine.setState(new RecapState(this.gameData, this.productsForSale));
       }
     } else if (this.curtainPos < 1) {
       // Start, open curtains
