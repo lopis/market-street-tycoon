@@ -5,6 +5,7 @@ import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import StockState from './stock.state';
 import { icons } from '@/core/icons';
+import { keySound } from '@/core/audio';
 
 class BuyState implements State {
   gameData: GameData;
@@ -46,7 +47,7 @@ class BuyState implements State {
       const productLine = `${supplier.stock}  ${supplier.productName}   ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
-        10, 14, row + 11, A_WHITE
+        10, 14, row + 13, A_WHITE
       );
 
       drawEngine.drawButton(
@@ -76,6 +77,35 @@ class BuyState implements State {
     this.updateControls();
   }
 
+  buyProduct() {
+    const supplier = this.gameData.suppliers[this.selection];
+    if (
+      supplier
+    ) {
+      if (
+        supplier.stock > 0
+        && supplier.price <= this.gameData.money
+      ) {
+        keySound(-2);
+      } else {
+        keySound(5);
+        return;
+      }
+      this.gameData.money -= supplier.price;
+      const avg = this.gameData.avgCost[supplier.productName] || 0;
+      const price = this.gameData.price[supplier.productName] || 0;
+      const stock = this.gameData.stock[supplier.productName] || 0;
+      this.gameData.avgCost[supplier.productName] = Math.round(
+        10 * (
+          !(avg && price) ? supplier.price / supplier.stock
+          : (supplier.price + price * stock) / (supplier.stock + stock)
+        )
+      ) / 10;
+      this.gameData.stock[supplier.productName] = stock + supplier.stock;
+      supplier.stock = 0;
+    }
+  }
+
   updateControls() {
     controls.updateSelection(this, this.gameData.suppliers.length);
 
@@ -84,21 +114,10 @@ class BuyState implements State {
       setTimeout(() => {
         this.active = -1;
       }, 100);
-      const supplier = this.gameData.suppliers[this.selection];
-      if (
-        supplier &&
-        supplier.stock > 0
-        && supplier.price <= this.gameData.money
-      ) {
-        this.gameData.money -= supplier.price;
-        const s = this.gameData.stock[supplier.productName] || 0;
-        this.gameData.stock[supplier.productName] = s + supplier.stock;
-        supplier.stock = 0;
-      }
-
       if (this.selection == this.gameData.suppliers.length) {
         this.next();
       }
+      this.buyProduct();
     }
   }
 }

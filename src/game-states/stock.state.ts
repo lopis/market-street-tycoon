@@ -6,6 +6,7 @@ import { playStateMachine } from '@/game-state-machine';
 import MarketState from './market.state';
 import BuyState from './buy.state';
 import { icons } from '@/core/icons';
+import { keySound } from '@/core/audio';
 
 class StockState implements State {
   gameData: GameData;
@@ -59,7 +60,7 @@ class StockState implements State {
     drawEngine.context.save();
     drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
     drawEngine.context.clip();
-    const rowHeight = 12 * 4;
+    const rowHeight = 12 * 5;
     drawEngine.context.translate(
       0,
       -Math.max(0, Math.min(this.products.length - 2, this.selection)) * rowHeight
@@ -68,16 +69,18 @@ class StockState implements State {
     .forEach((product) => {
       const row = index * rowHeight + 15;
       const stock = this.gameData.stock[product];
+      const avgCost = this.gameData.avgCost[product] || 0;
 
       if (!stock) return;
 
       drawEngine.drawIcon(icons[product], 3, row + 1);
       drawEngine.drawText(product, 10, 14, row + 1, A_WHITE);
       drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 12, A_WHITE);
+      drawEngine.drawText(`Avg cost: ${avgCost}`, 10, 1, row + 24, A_WHITE);
       const reputation =  1 + Math.round(4 * (this.gameData.reputation[product] || 0) / 100);
       drawEngine.drawText(
         `Reputation: ${'★'.repeat(reputation)}${'✩'.repeat(5 - reputation)}`,
-        10, 1, row + 24,
+        10, 1, row + 36,
         A_WHITE
       );
 
@@ -126,18 +129,11 @@ class StockState implements State {
     const isLeft = controls.isLeft && !controls.previousState.isLeft;
     const isRight = controls.isRight && !controls.previousState.isRight;
     if((isLeft || isRight)) {
-      if (this.selection < Object.keys(this.gameData.stock).length) {
-        this.active = [this.selection, isLeft ? '–' : '+'];
-        setTimeout(() => {
-          this.active = [-1, ''];
-        }, 100);
-
-        const product = this.products[this.selection];
-        if (product && this.gameData.price[product as ProductType] != undefined) {
-          // @ts-ignore
-          this.gameData.price[product] = Math.max(0, this.gameData.price[product] + (isLeft ? -1 : 1));
-        }
+      if (this.selection < this.products.length) {
+        keySound(isLeft ? 2 : -2);
+        this.updatePrice(isLeft);
       } else {
+        keySound(2);
         this.backSelected = !this.backSelected;
       }
     }
@@ -153,6 +149,20 @@ class StockState implements State {
           }, 1200);
         }
       }
+      keySound(-2);
+    }
+  }
+
+  updatePrice(isLeft: boolean) {
+    this.active = [this.selection, isLeft ? '–' : '+'];
+    setTimeout(() => {
+      this.active = [-1, ''];
+    }, 100);
+
+    const product = this.products[this.selection];
+    if (product && this.gameData.price[product as ProductType] != undefined) {
+      // @ts-ignore
+      this.gameData.price[product] = Math.max(1, this.gameData.price[product] + (isLeft ? -1 : 1));
     }
   }
 }

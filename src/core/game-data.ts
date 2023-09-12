@@ -72,7 +72,8 @@ class GameData {
   money: number;
   stock: ProductValue = {};
   price: ProductValue = {};
-  reputation: ProductValue = {apples: 50};
+  avgCost: ProductValue = {};
+  reputation: ProductValue = {};
   demand: ProductValue = {
     'bread': 1,
     'apples': 0.6,
@@ -116,7 +117,7 @@ class GameData {
         productName: 'apples',
         supplierName: nextName(),
         price: 15,
-        stock: 60,
+        stock: 6,
       },
       {
         productName: 'bread',
@@ -158,19 +159,19 @@ class GameData {
     while (this.suppliers.length < 3) {
       const possibleProduct : ProductType[] = ['apples', 'bread', 'oil', 'wood'];
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if(this.reputation['apples'] > 3 && this.reputation['bread'] > 3 && this.reputation['eggs'] > 3) {
+      if(this.reputation['apples'] > 2 && this.reputation['bread'] > 2 && this.reputation['eggs'] > 2) {
         possibleProduct.push('pies');
       }
-      if(Object.values(this.reputation).some(r => r > 4)) {
+      if(Object.values(this.reputation).some(r => r > 2)) {
         possibleProduct.push('ceramics');
         possibleProduct.push('spice');
       }
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if (this.reputation['ceramics'] > 3) {
+      if (this.reputation['ceramics'] > 2) {
         possibleProduct.push('gems');
       }
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if (this.reputation['gems'] > 3) {
+      if (this.reputation['gems'] > 2) {
         possibleProduct.push('gems');
       }
       const product = possibleProduct[Math.floor(Math.random() * (possibleProduct.length - 0.01))];
@@ -204,6 +205,10 @@ class GameData {
       money: this.money,
       stock: this.stock,
     }));
+  }
+
+  delete() {
+    localStorage.removeItem(LOCALSTORAGE_KEY);
   }
 
   recordHistory(demand: ProductValue, sales: ProductValue){

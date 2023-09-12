@@ -57,7 +57,7 @@ class DrawEngine {
     // c2d.addEventListener('click', () => {
     //   alert(`Use the ${screen.width > 900 ? 'arrow keys and Enter' : 'game pad below'} to control the game.`);
     // }, { once: true });
-    this.fontContext = font.getContext('2d');
+    this.fontContext = font.getContext('2d', { willReadFrequently: true });
     this.context.canvas.height = HEIGHT;
     this.context.canvas.width = WIDTH;
   }
@@ -334,9 +334,15 @@ class DrawEngine {
           37 + (j % perRow) * icon.padding + boxNumber * 30 + icon.padding * 0.5 * (productLevel % 2),
           90 - (Math.floor((j % maxPerBox) / perRow)) * (icon.padding-1) - icon.y - productLevel * icon.padding,
         );
+        // level separator
         if (j && j % maxPerBox == 0) {
           this.context.fillStyle = BROWN1;
-          this.context.fillRect(37 + boxNumber * 30, 74 - productLevel * icon.size, 26, 23);
+          this.context.fillRect(
+            37 + boxNumber * 30 + (j % 2) * 2,
+            74 - productLevel * icon.size,
+            26 - 3,
+            23
+          );
         }
       }
     });

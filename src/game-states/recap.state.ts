@@ -7,6 +7,7 @@ import BuyState from './buy.state';
 import { icons } from '@/core/icons';
 import { MARKET_TIME, MARKET_CUSTOMERS } from './market.state';
 import { trigger } from '@/core/events';
+import { keySound } from '@/core/audio';
 
 class RecapState implements State {
   gameData: GameData;
@@ -50,7 +51,7 @@ class RecapState implements State {
     drawEngine.drawOverlay(this.gameData.week);
     drawEngine.drawHeader('Summary', this.gameData, this.total);
 
-    if (this.gameData.money === 0) {
+    if (this.gameData.money + this.total === 0) {
       [
         'You ran out of money.',
         'GAME OVER',
@@ -151,10 +152,12 @@ class RecapState implements State {
   updateControls() {
     controls.updateSelection(this, 99);
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      if (this.gameData.money === 0) {
+      if (this.gameData.money + this.total === 0) {
+        this.gameData.delete();
         trigger('restart');
       }
       this.gameData.week++;
+      keySound(-2);
       this.next();
     }
   }

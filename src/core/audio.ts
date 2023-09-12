@@ -10,11 +10,15 @@
 //   return Math.sin(i/5 - Math.sin(i/2))  *Math.sin(i / (n/2) * Math.PI) * 0.2;
 // }
 
-// export const woah = (i) => {
-//   var n=2e4;
+// const t = (i: number, n: number) => (n-i)/n;
+
+// export const arrowKeySound = (i: number) => {
+//   const n = 0.44e4;
+//   const freq = 1.04;
 //   if (i > n) return null;
-//   return Math.sin(i*0.0006*Math.sin(0.009*i)+Math.sin(i/400))*(n-i)/n*0.5;
-// }
+//   const q = 0.5 * Math.pow(t(i, n), 0.5);
+//   return (Math.pow(i, freq) & 98) ? q : -q;
+// };
 
 // export const haow = i => {
 //   var n=2e4;
@@ -24,22 +28,25 @@
 // }
 
 let a: AudioContext;
+let b: AudioContext;
 let noise: AudioBufferSourceNode | null;
 const musicVolume = 0.3;
 const noiseVolume = 0.3;
 const duration = 0.25;
 
 // Sound player
-export const playSound = (fn: (i: number) => number) => {
-  if (!a || !noise) return;
-  const buffer = a.createBuffer(1,96e3,48e3);
-  const data = buffer.getChannelData(0);
-  for (let i=96e3; i--;) data[i] = fn(i);
-  const source = a.createBufferSource();
-  source.buffer = buffer;
-  source.connect(a.destination);
-  source.start();
-};
+// export const playSound = (fn: (i: number) => number | null) => {
+//   if (!b) {
+//     b = new AudioContext();
+//   }
+//   const buffer = b.createBuffer(1,96e3,48e3);
+//   const data = buffer.getChannelData(0);
+//   for (let i=96e3; i--;) data[i] = fn(i) || 0;
+//   const source = b.createBufferSource();
+//   source.buffer = buffer;
+//   source.connect(b.destination);
+//   source.start();
+// };
 
 const noiseBuffer = () => {
   const bufferSize = a.sampleRate * duration;
@@ -53,23 +60,29 @@ const noiseBuffer = () => {
   return buffer;
 };
 
-const playNote = (note: number, time: number) => {
-  const osc = a.createOscillator();
-  const gain = a.createGain();
-  const bandpass = a.createBiquadFilter();
+const playNote = (actx: AudioContext, note: number, time: number): OscillatorNode => {
+  const osc = actx.createOscillator();
+  const gain = actx.createGain();
+  const bandpass = actx.createBiquadFilter();
   bandpass.type = 'bandpass';
   bandpass.frequency.setValueAtTime(800, time);
   osc.type = 'square';
   osc.connect(gain);
-  gain.connect(bandpass).connect(a.destination);
+  gain.connect(bandpass).connect(actx.destination);
   gain.gain.setValueAtTime(0.01, time);
-  let gap = 0.8;
+  const gap = 0.8;
   gain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
   gain.gain.setValueAtTime(musicVolume, time + duration*gap);
   gain.gain.setValueAtTime(musicVolume, time + duration*(1.5 - gap));
   gain.gain.linearRampToValueAtTime(0.01, time + duration*1.5);
   const frequency = 440 / 1.06 ** note;
   osc.frequency.setValueAtTime(frequency, time);
+
+  return osc;
+};
+
+const playGameNote = (note: number, time: number) => {
+  const osc = playNote(a, note, time);
 
   // the noise
   noise = a.createBufferSource();
@@ -79,7 +92,7 @@ const playNote = (note: number, time: number) => {
   noiseFilter.frequency.setValueAtTime(500, time);
   const noiseGain = a.createGain();
   noiseGain.gain.setValueAtTime(0.01, time);
-  gap = 0.47;
+  const gap = 0.47;
   noiseGain.gain.exponentialRampToValueAtTime(noiseVolume, time + duration*gap);
   noiseGain.gain.setValueAtTime(noiseVolume, time + duration*(0.9 - gap));
   noiseGain.gain.exponentialRampToValueAtTime(0.01, time + duration*1);
@@ -139,7 +152,7 @@ const scheduleNextNote = (repeat = false) => {
   if (!musicIsPlaying) return;
   if (startTime + currentNoteIndex * duration < a.currentTime) {
     /** @ts-ignore */
-    playNote(notes[currentNoteIndex], startTime + currentNoteIndex * duration);
+    playGameNote(notes[currentNoteIndex], startTime + currentNoteIndex * duration);
     currentNoteIndex++;
     if (currentNoteIndex == notes.length) {
       if (!repeat) return;
@@ -162,6 +175,16 @@ export const startMarketMusic = (repeat = false) => {
   startTime = 0;
   musicIsPlaying = true;
   scheduleNextNote(repeat);
+};
+
+export const keySound = (note: number) => {
+  if (!b) {
+    b = new AudioContext();
+  }
+  const time = b.currentTime;
+  const osc = playNote(b, note, time);
+  osc.start(time);
+  osc.stop(time + duration);
 };
 
 // export const toggleSoundEffects = () => {
