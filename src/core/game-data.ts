@@ -78,6 +78,7 @@ class GameData {
     'bread': 1,
     'apples': 0.6,
     'oil': 0.5,
+    'eggs': 0.8,
     'wood': 1,
     'ceramics': 0.5,
     'pies': 0.8,
@@ -87,15 +88,17 @@ class GameData {
   marketPrice: ProductValue = {
     'bread': 6,
     'apples': 8,
+    'eggs': 4,
     'oil': 16,
     'wood': 3,
     'ceramics': 20,
     'pies': 10,
     'gems': 30,
   };
-  spoilRate: ProductValue = {
+  spoilProb: ProductValue = {
     'bread': 1,
     'apples': 0.4,
+    'eggs': 0.1,
     'oil': 0,
     'wood': 0,
     'ceramics': 0,
@@ -148,6 +151,7 @@ class GameData {
     });
 
     if (isBroke) {
+      this.suppliers = this.suppliers.filter(supplier => supplier.productName != 'wood');
       this.suppliers.push({
         productName: 'wood',
         supplierName: nextName(),
@@ -157,23 +161,27 @@ class GameData {
     }
 
     while (this.suppliers.length < 3) {
-      const possibleProduct : ProductType[] = ['apples', 'bread', 'oil', 'wood'];
+      const MIN_REPUTATION = 25; // nr of products sold
+      let possibleProduct : ProductType[] = ['apples', 'bread', 'oil', 'wood', 'eggs'];
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if(this.reputation['apples'] > 2 && this.reputation['bread'] > 2 && this.reputation['eggs'] > 2) {
+      if(this.reputation['apples'] > MIN_REPUTATION // @ts-ignore
+        && this.reputation['bread'] > MIN_REPUTATION // @ts-ignore
+        && this.reputation['eggs'] > MIN_REPUTATION // @ts-ignore
+      ) {
         possibleProduct.push('pies');
       }
-      if(Object.values(this.reputation).some(r => r > 2)) {
+      if(Object.values(this.reputation).some(r => r > MIN_REPUTATION)) {
         possibleProduct.push('ceramics');
         possibleProduct.push('spice');
       }
       // @ts-ignore -- it's ok if they are undefined, this still works.
-      if (this.reputation['ceramics'] > 2) {
+      if (this.reputation['ceramics'] > MIN_REPUTATION) {
         possibleProduct.push('gems');
       }
-      // @ts-ignore -- it's ok if they are undefined, this still works.
-      if (this.reputation['gems'] > 2) {
-        possibleProduct.push('gems');
-      }
+
+      // Avoid repeated products
+      possibleProduct = possibleProduct.filter(product => !this.suppliers.some(s => s.productName == product));
+
       const product = possibleProduct[Math.floor(Math.random() * (possibleProduct.length - 0.01))];
       const reputation = this.reputation[product] || 0;
       const multiplier = 15 * reputation / 100;
@@ -181,7 +189,7 @@ class GameData {
       this.suppliers.push({
         productName: product,
         supplierName: nextName(),
-        price: stock * (this.marketPrice[product] || 1),
+        price: Math.round(stock * (this.marketPrice[product] || 1) * (0.3 * Math.random() + 0.5)),
         stock: stock,
       });
     }

@@ -32,7 +32,7 @@ export const icons: {[Property in ProductType]: Icon} = {
     data: '@II@HIIAHIIAHAxmmGx}oGxmmG@@',
     size: 8,
     padding: 8,
-    y: -1,
+    y: -2,
   },
   'pies': {
     data: '@@@@xGojjzWUU}xG@@@@',

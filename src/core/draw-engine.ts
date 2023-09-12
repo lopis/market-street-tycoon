@@ -158,7 +158,7 @@ class DrawEngine {
     const money = shorterMoney(gameData.money);
     this.drawText(`${money}$`, 10, WIDTH, 1, GREEN, 'right');
     if (total != -1) {
-      this.drawText(`+ ${total}$`, 10, WIDTH, 13, GREEN, 'right');
+      this.drawText(`+ ${total}$`, 10, WIDTH, 13, A_BLACK, 'right');
     }
   }
 
@@ -324,7 +324,8 @@ class DrawEngine {
       const perRow = Math.floor(27 / icon.padding);
       const boxNumber = s.length === 3 ? i
       : s.length === 1 ? 1
-      : i * 2;
+      : s.length === 2 ? i * 2
+      : i;
       // @ts-ignore
       const maxPerBox = Math.min(finalStock, perRow * Math.ceil(25 / icon.padding));
       for(let j = 0; j < finalStock; j++) {
@@ -339,7 +340,7 @@ class DrawEngine {
           this.context.fillStyle = BROWN1;
           this.context.fillRect(
             37 + boxNumber * 30 + (j % 2) * 2,
-            74 - productLevel * icon.size,
+            74 - productLevel * icon.padding + icon.y,
             26 - 3,
             23
           );

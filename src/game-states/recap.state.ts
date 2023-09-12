@@ -38,7 +38,7 @@ class RecapState implements State {
         0,
         (this.gameData.stock[product as ProductType] || 0) - sales
       );
-      const spoiled = Math.floor((this.gameData.spoilRate[product as ProductType] || 0) * stock);
+      const spoiled = Math.floor((this.gameData.spoilProb[product as ProductType] || 0) * stock);
       this.gameData.stock[product as ProductType] = stock - spoiled;
       this.spoiled[product as ProductType] = spoiled;
       this.gameData.reputation[product as ProductType] = (
@@ -101,12 +101,12 @@ class RecapState implements State {
         const demandIcons = 10;
         const d = Math.round(Math.min(demandIcons, demandIcons * (recap.demand[product] || 0)));
         drawEngine.drawText(`${product}`, 10, 12, row, A_WHITE);
-        drawEngine.drawText(`Demand:  ${'▮'.repeat(d)}${'▯'.repeat(demandIcons - d)}`, 10, 2, row + 12, A_WHITE);
+        drawEngine.drawText(`Demand:  ${'▪'.repeat(d)}${'▫'.repeat(demandIcons - d)}`, 10, 2, row + 12, A_WHITE);
         const price = (this.gameData.price[product] || 0);
         const total = sales * price;
         drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 2, row + 24, A_WHITE);
         drawEngine.drawText(
-          `Spoiled:  ${this.gameData.spoilRate[product] ? this.spoiled[product] : 'does not spoil'}`,
+          `Spoiled:  ${this.gameData.spoilProb[product] ? this.spoiled[product] : 'does not spoil'}`,
           10, 2, row + 36,
           A_WHITE
         );
