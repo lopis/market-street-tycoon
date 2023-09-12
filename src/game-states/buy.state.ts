@@ -115,6 +115,7 @@ class BuyState implements State {
         this.active = -1;
       }, 100);
       if (this.selection == this.gameData.suppliers.length) {
+        keySound(-2);
         this.next();
       }
       this.buyProduct();
