@@ -1,5 +1,5 @@
 import { MARKET_TIME, Person } from '@/game-states/market.state';
-import GameData, { ProductValue } from './game-data';
+import GameData, { ProductType, ProductValue } from './game-data';
 import { Icon, icons } from './icons';
 import { easeInOutSine } from './util';
 
@@ -314,16 +314,17 @@ class DrawEngine {
     }
   }
 
-  drawProducts(stock: ProductValue, productSales: ProductValue) {
-    const s = Object.entries(stock).filter(([, amount]) => !!amount);
+  drawProducts({ stock, price }: GameData, productSales: ProductValue) {
+    const s = Object.entries(stock).filter(([product, amount], i) => {
+      return amount && price[product as ProductType] && i < 3;
+    });
     s.forEach(([type, amount], i) => {
       // @ts-ignore -- type is a valid key
       const finalStock = Math.ceil(amount - productSales[type]);
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);
-      const boxNumber = s.length === 3 ? i
-      : s.length === 1 ? 1
+      const boxNumber = s.length === 1 ? 1
       : s.length === 2 ? i * 2
       : i;
       // @ts-ignore

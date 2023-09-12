@@ -49,9 +49,8 @@ class MarketState implements State {
         const reputation = Math.max(0.2, (this.gameData.reputation[product] || 0) / 100);
         const totalCustomers = MARKET_CUSTOMERS;
         // Product sold each milisecond
-        this.productDemand[product] = (priceRatio * demand * reputation) * totalCustomers / MARKET_TIME;
+        this.productDemand[product] = (priceRatio * demand * reputation) * totalCustomers / (MARKET_TIME - 0.5);
         this.productSales[product] = 0;
-        console.log(priceRatio, demand);
       }
     });
   }
@@ -60,7 +59,7 @@ class MarketState implements State {
     drawEngine.drawBrickWall();
     drawEngine.drawTent();
     drawEngine.drawBoxes();
-    drawEngine.drawProducts(this.gameData.stock, this.productSales);
+    drawEngine.drawProducts(this.gameData, this.productSales);
     drawEngine.drawState(this.gameData, this.productSales);
     drawEngine.drawPeople(this.people);
     drawEngine.drawFPS();
@@ -68,7 +67,11 @@ class MarketState implements State {
 
     if (this.time < MARKET_TIME) {
       this.time += timeElapsed;
-      Object.entries(this.productDemand).forEach(([product, demand]) => {
+      Object.entries(this.gameData.stock).forEach(([product], i) => {
+        if (!this.gameData.price[product as ProductType] || i > 2) {
+          return;
+        }
+        const demand = this.productDemand[product as ProductType] || 0;
         const s = this.productSales[product as ProductType] || 0;
         if (s < (this.gameData.stock[product as ProductType] || 0)) {
           this.productSales[product as ProductType] = s + demand * timeElapsed;

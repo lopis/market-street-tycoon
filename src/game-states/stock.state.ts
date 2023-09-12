@@ -91,8 +91,9 @@ class StockState implements State {
         s,
         this.active[0] === index && this.active[1] === s,
       ));
+      const price = this.gameData.price[product as ProductType];
       drawEngine.drawText(
-        `${this.gameData.price[product as ProductType]}$`,
+        price ? `${price}$` : 'N / A',
         10, WIDTH - 33, row + 7,
         A_WHITE,
         'center'
@@ -162,7 +163,7 @@ class StockState implements State {
     const product = this.products[this.selection];
     if (product && this.gameData.price[product as ProductType] != undefined) {
       // @ts-ignore
-      this.gameData.price[product] = Math.max(1, this.gameData.price[product] + (isLeft ? -1 : 1));
+      this.gameData.price[product] = Math.max(0, this.gameData.price[product] + (isLeft ? -1 : 1));
     }
   }
 }
