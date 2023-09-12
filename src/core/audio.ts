@@ -69,7 +69,7 @@ const playNote = (actx: AudioContext, note: number, time: number): OscillatorNod
   osc.type = 'square';
   osc.connect(gain);
   gain.connect(bandpass).connect(actx.destination);
-  gain.gain.setValueAtTime(0.01, time);
+  gain.gain.setValueAtTime(0.001, time);
   const gap = 0.8;
   gain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
   gain.gain.setValueAtTime(musicVolume, time + duration*gap);
