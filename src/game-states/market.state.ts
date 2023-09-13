@@ -5,7 +5,7 @@ import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import RecapState from './recap.state';
 
-export const MARKET_TIME = 1000;
+export const MARKET_TIME = 10000;
 export const MARKET_CUSTOMERS = 20;
 
 export interface Person {
