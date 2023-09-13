@@ -94,6 +94,7 @@ class GameData {
     'ceramics': 20,
     'pies': 10,
     'gems': 30,
+    'spice': 40,
   };
   spoilProb: ProductValue = {
     'bread': 1,

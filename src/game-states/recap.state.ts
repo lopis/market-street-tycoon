@@ -32,7 +32,7 @@ class RecapState implements State {
 
   onEnter() {
     const recap = this.gameData.history[this.gameData.week];
-    this.productsForSale.map((product) => {
+    Object.keys(recap.sales).map((product) => {
       const sales = recap.sales[product as ProductType] = Math.round(recap.sales[product as ProductType] || 0);
       recap.demand[product as ProductType] = (recap.demand[product as ProductType] || 0) * MARKET_TIME / MARKET_CUSTOMERS;
       this.total += sales * (this.gameData.price[product as ProductType] || 0);
@@ -40,7 +40,7 @@ class RecapState implements State {
         0,
         (this.gameData.stock[product as ProductType] || 0) - sales
       );
-      const spoiled = Math.floor((this.gameData.spoilProb[product as ProductType] || 0) * stock);
+      const spoiled = Math.round((this.gameData.spoilProb[product as ProductType] || 0) * stock);
       this.gameData.stock[product as ProductType] = stock - spoiled;
       this.spoiled[product as ProductType] = spoiled;
       this.gameData.reputation[product as ProductType] = (
@@ -82,15 +82,18 @@ class RecapState implements State {
         'next'
       );
 
+      const productsInStock = Object.values(this.gameData.stock).filter(s => !!s).length;
       const recap = this.gameData.history[this.gameData.week];
       drawEngine.context.save();
       drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
       drawEngine.context.clip();
+      debugger;
       const recapSales = Object.entries(recap.sales);
       const rowHeight = 12 * 5;
       const scrollSpeed = 20;
-      const totalHeight = Math.max(0, recapSales.length - 2) * rowHeight;
-      if (this.selection > totalHeight / scrollSpeed) {
+      const totalHeight = Math.max(0, productsInStock - 2) * rowHeight;
+      const maxSelection = totalHeight / scrollSpeed;
+      if (this.selection > maxSelection) {
         this.selection = Math.round(totalHeight / scrollSpeed);
       }
       drawEngine.context.translate(0, -this.selection * scrollSpeed);
@@ -136,8 +139,8 @@ class RecapState implements State {
           '▼'
         );
         const scrollLength = 40 + 20 - height;
-        const scrollbarHeight = Math.floor(scrollLength * 2 / recapSales.length);
-        const scrollbarPosY = Math.round((scrollLength - scrollbarHeight) * this.selection / recapSales.length);
+        const scrollbarHeight = Math.floor(scrollLength * 2 / productsInStock);
+        const scrollbarPosY = Math.round((scrollLength - scrollbarHeight) * this.selection / maxSelection);
         drawEngine.context.fillStyle = 'white';
         drawEngine.context.fillRect(
           WIDTH - 10 - width / 2,
