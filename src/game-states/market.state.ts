@@ -68,14 +68,13 @@ class MarketState implements State {
     drawEngine.drawProducts(this.gameData, this.productSales, this.productsForSale);
     drawEngine.drawState(this.gameData, this.productSales);
     drawEngine.drawPeople(this.people);
-    drawEngine.drawFPS();
+    // drawEngine.drawFPS();
     drawEngine.drawClock(this.time);
 
     if (this.time < MARKET_TIME) {
       this.time += timeElapsed;
       this.productsForSale.forEach((product) => {
         if (!this.gameData.price[product as ProductType]) {
-          debugger;
           return;
         }
         const demand = this.productDemand[product as ProductType] || 0;

@@ -77,7 +77,7 @@ class StockState implements State {
       drawEngine.drawText(product, 10, 14, row + 1, A_WHITE);
       drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 12, A_WHITE);
       drawEngine.drawText(`Avg cost: ${avgCost}$`, 10, 1, row + 24, A_WHITE);
-      const reputation =  1 + Math.round(4 * (this.gameData.reputation[product] || 0) / 100);
+      const reputation =  Math.min(5, 1 + Math.round(4 * (this.gameData.reputation[product] || 0) / 100));
       drawEngine.drawText(
         `Reputation: ${'★'.repeat(reputation)}${'✩'.repeat(5 - reputation)}`,
         10, 1, row + 36,

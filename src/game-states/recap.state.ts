@@ -87,7 +87,6 @@ class RecapState implements State {
       drawEngine.context.save();
       drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
       drawEngine.context.clip();
-      debugger;
       const recapSales = Object.entries(recap.sales);
       const rowHeight = 12 * 5;
       const scrollSpeed = 20;

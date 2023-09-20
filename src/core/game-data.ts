@@ -194,7 +194,6 @@ class GameData {
         price: price,
         stock: stock,
       });
-      console.log(product, stock, price, this.marketPrice[product]);
 
     }
   }
