@@ -41,18 +41,21 @@ class MenuState implements State {
     drawEngine.context.clip();
     drawEngine.context.translate(0, -this.selection * 6);
     this.renderText([
-      'You\'re a merchant in the',
-      'village market, trying to',
-      'succed. Buy goods from the',
-      'region and resell them for',
-      'the best price, depending',
-      'on customer demand.',
-      'Your reputation increases',
-      'the more you sell each item',
-      'and unlocks new suppliers.',
-      '',
-      'Use the arrow keys and Enter',
-      ' to control the game.',
+    // ------------------------
+      'You are a merchant in',
+      'the village market,',
+      'trying to succeed. Buy',
+      'goods from the region',
+      'and resell them for the',
+      'best price, depending on',
+      'customer demand. Your',
+      'reputation increases',
+      'the more you sell each',
+      'item and unlocks new',
+      'suppliers and products.',
+      ' ',
+      'Use the arrow keys and',
+      'Enter to play.',
     ]);
     drawEngine.context.restore();
     drawEngine.drawButton(
@@ -85,7 +88,7 @@ class MenuState implements State {
     lines.map((line, i) => {
       drawEngine.drawText(
         line,
-        10, 12 + i * 12,
+        10, 8 + i * 8,
         WHITE2,
         'left'
       );
