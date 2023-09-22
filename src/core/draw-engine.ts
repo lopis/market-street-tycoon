@@ -2,6 +2,7 @@ import { MARKET_TIME, Person } from '@/game-states/market.state';
 import GameData, { ProductType, ProductValue } from './game-data';
 import { Icon, icons } from './icons';
 import { easeInOutSine } from './util';
+import { tinyFont } from './font';
 
 export const HEIGHT = 144;
 export const WIDTH = 160;
@@ -35,6 +36,17 @@ const shorterMoney = (money: number) => {
   return money < 1000 ? money
   : money < 1000000 ? `${Math.round(money / 100) / 10}k`
   : `${Math.round(money / 1000000) / 10}M`;
+};
+
+const hexToRgb = (hex: string) : number[] => {
+  // @ts-ignore
+  return hex.replace(
+    /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+    (m, r, g, b) => '#' + r + r + g + g + b + b)
+    .substring(1)
+    .match(/.{2}/g)
+    .map(x => parseInt(x, 16)
+  );
 };
 
 class DrawEngine {
@@ -85,7 +97,29 @@ class DrawEngine {
 
   // Adapted from https://github.com/xem/miniPixelFont
   // threshold from 0 to 255
-  drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 70) {
+  drawText(text: string, x: number, y: number, color = WHITE1, textAlign : CanvasTextAlign = 'left') {
+    const width = 6 * text.length;
+    const offsetX = textAlign === 'left' ? 0 : textAlign === 'center' ? width / 2 : width;
+    const imageData = this.context.getImageData(x - offsetX, y, width, 5);
+    const [r, g, b] = hexToRgb(color);
+    text.toUpperCase().split('').forEach((character: string, i) => {
+      // @ts-ignore
+      const letter = character === ' ' ? '0' : tinyFont[character.charCodeAt(0) - 35];
+      const paddedBinary = String(parseInt(letter, 36).toString(2)).padStart(25, '0');
+      paddedBinary.split('').forEach((bit, j) => {
+        if (bit !== '0') {
+          const index = (i * 6 + j % 5 + width * Math.floor(j / 5)) * 4;
+          imageData.data[index] =     imageData.data[index] * 0.25 + r * 0.75;
+          imageData.data[index + 1] = imageData.data[index + 1] * 0.25 + g * 0.75;
+          imageData.data[index + 2] = imageData.data[index + 2] * 0.25 + b * 0.75;
+          imageData.data[index + 3] = 255;
+        }
+      });
+    });
+    this.context.putImageData(imageData, x - offsetX, y);
+  }
+
+  drawRealText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 70) {
     const font = `${fontSize}px sans, Droid Sans, Arial, Helvetica`;
 
     /* Compute and draw */
@@ -154,11 +188,11 @@ class DrawEngine {
   drawHeader(title: string, gameData: GameData, total = -1) {
     this.context.fillStyle = A_BLACK;
     this.context.fillRect(0, 0, WIDTH, 12);
-    this.drawText(`Week ${gameData.week} - ${title}`, 10, 1, 1, RED1);
+    this.drawText(`Week ${gameData.week} - ${title}`, 3, 3, RED1);
     const money = shorterMoney(gameData.money);
-    this.drawText(`${money}$`, 10, WIDTH, 1, GREEN, 'right');
+    this.drawText(`${money}$`, WIDTH, 3, GREEN, 'right');
     if (total != -1) {
-      this.drawText(`+ ${total}$`, 10, WIDTH, 13, A_BLACK, 'right');
+      this.drawText(`+ ${total}$`, WIDTH, 13, A_BLACK, 'right');
     }
   }
 
@@ -282,11 +316,11 @@ class DrawEngine {
     const activeOffset = active ? 1 : 0;
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
-    const width = text.length * 10;
+    const width = (text.length + 2) * 6;
     const height = 13;
     this.context.translate(activeOffset, activeOffset);
     this.context.fillRect(x - width/2, y, width, height);
-    this.drawText(text, 10, x, y + 2, BLACK, 'center');
+    this.drawText(text, x, y + 4, BLACK, 'center');
     this.context.translate(-activeOffset, -activeOffset);
 
     return {width, height};
@@ -361,8 +395,8 @@ class DrawEngine {
     this.context.fillStyle = WHITE2;
     this.context.fillRect(margin, margin, width, 12);
     this.context.fillRect(WIDTH - margin - width, margin, width, 12);
-    this.drawText(`Week ${data.week}`, 10, margin + 2, margin + 2, BLACK);
-    this.drawText(`${data.money + income}$`, 10, WIDTH - margin - 2, margin + 2, BLACK, 'right');
+    this.drawText(`Week ${data.week}`, margin + 2, margin + 3, BLACK);
+    this.drawText(`${data.money + income}$`, WIDTH - margin - 2, margin + 3, BLACK, 'right');
   }
 
   drawPeople(people: Person[]) {

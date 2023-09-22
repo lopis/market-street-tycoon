@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData, { ProductType, ProductValue } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -8,6 +8,9 @@ import { icons } from '@/core/icons';
 import { MARKET_TIME, MARKET_CUSTOMERS } from './market.state';
 import { trigger } from '@/core/events';
 import { keySound } from '@/core/audio';
+
+const SQUARE_FULL = '(';
+const SQUARE_EMPTY = '\'';
 
 class RecapState implements State {
   gameData: GameData;
@@ -60,10 +63,9 @@ class RecapState implements State {
       ].map((line, i) => {
         drawEngine.drawText(
           line,
-          12,
           WIDTH / 2,
           HEIGHT / 3 + 15 * i,
-          A_WHITE,
+          WHITE1,
           'center'
         );
       });
@@ -104,15 +106,15 @@ class RecapState implements State {
         drawEngine.drawIcon(icons[product], 3, row);
         const demandIcons = 10;
         const d = Math.round(Math.min(demandIcons, demandIcons * (recap.demand[product] || 0)));
-        drawEngine.drawText(`${product}`, 10, 12, row, A_WHITE);
-        drawEngine.drawText(`Demand:  ${'▪'.repeat(d)}${'▫'.repeat(demandIcons - d)}`, 10, 2, row + 12, A_WHITE);
+        drawEngine.drawText(`${product}`, 12, row, WHITE1);
+        drawEngine.drawText(`Demand:  ${SQUARE_FULL.repeat(d)}${SQUARE_EMPTY.repeat(demandIcons - d)}`, 2, row + 12, WHITE1);
         const price = (this.gameData.price[product] || 0);
         const total = sales * price;
-        drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 10, 2, row + 24, A_WHITE);
+        drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 2, row + 24, WHITE1);
         drawEngine.drawText(
           `Spoiled:  ${this.gameData.spoilProb[product] ? this.spoiled[product] : 'does not spoil'}`,
-          10, 2, row + 36,
-          A_WHITE
+          2, row + 36,
+          WHITE1
         );
       });
       drawEngine.context.restore();

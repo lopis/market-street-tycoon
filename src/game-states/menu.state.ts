@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { A_WHITE, HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
+import { HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
@@ -20,7 +20,7 @@ class MenuState implements State {
 
   renderMenu() {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
-      drawEngine.drawText(s, 20, WIDTH / 2, 8 + i * 16, YELLOW, 'center', 100);
+      drawEngine.drawRealText(s, 20, WIDTH / 2, 8 + i * 16, YELLOW, 'center', 100);
     });
     const menu = ['New Game', 'Continue', 'FullScreen', 'Help', 'About'];
     if (!localStorage.getItem(LOCALSTORAGE_KEY)) {
@@ -28,9 +28,9 @@ class MenuState implements State {
     }
     menu.map((s, i) => {
       drawEngine.drawText(
-        `${this.selection == i ? '▸': ' '} ${s}`,
-        10, 10, 70 + i * 13,
-        this.selection == i ? 'white' : A_WHITE
+        `${this.selection == i ? '&': ' '} ${s}`,
+        10, 70 + i * 13,
+        this.selection == i ? WHITE1 : WHITE2
       );
     });
   }
@@ -72,7 +72,7 @@ class MenuState implements State {
       'js13kgames.com',
       '',
       '♥',
-    ], 13);
+    ]);
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
@@ -81,14 +81,13 @@ class MenuState implements State {
     );
   }
 
-  renderText(lines: string[], fontSize = 9){
+  renderText(lines: string[]){
     lines.map((line, i) => {
       drawEngine.drawText(
         line,
-        fontSize, 10, 12 + i * 12,
+        10, 12 + i * 12,
         WHITE2,
-        'left',
-        100
+        'left'
       );
     });
   }

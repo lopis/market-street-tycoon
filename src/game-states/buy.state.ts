@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { A_BLACK, A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, BLACK, HEIGHT, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -43,11 +43,11 @@ class BuyState implements State {
 
       drawEngine.drawIcon(icons[supplier.productName], 3, row + 6);
 
-      drawEngine.drawText(supplier.supplierName, 10, 14, 1 + row, A_WHITE);
-      const productLine = `${supplier.stock}  ${supplier.productName}   ${supplier.price}$`;
+      drawEngine.drawText(supplier.supplierName, 14, 1 + row, WHITE1);
+      const productLine = `${supplier.stock} ${supplier.productName} ${supplier.price}$`;
       drawEngine.drawText(
         supplier.stock ? productLine : 'soldout',
-        10, 14, row + 13, A_WHITE
+        14, row + 13, WHITE1
       );
 
       drawEngine.drawButton(
@@ -69,8 +69,8 @@ class BuyState implements State {
     if (this.gameData.week > 1 && this.totalTime > 500 && this.totalTime < 3000) {
       drawEngine.drawText(
         'Game saved',
-        10, 5, HEIGHT - 12,
-        A_BLACK,
+        5, HEIGHT - 12,
+        BLACK,
       );
     }
 

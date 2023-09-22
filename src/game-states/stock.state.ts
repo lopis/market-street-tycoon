@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { A_WHITE, HEIGHT, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData, { ProductType, products } from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -7,6 +7,9 @@ import MarketState from './market.state';
 import BuyState from './buy.state';
 import { icons } from '@/core/icons';
 import { keySound } from '@/core/audio';
+
+const STAR_FULL = '*';
+const STAR_EMPTY = ')';
 
 class StockState implements State {
   gameData: GameData;
@@ -48,10 +51,9 @@ class StockState implements State {
     if (this.isStockEmpty) {
       drawEngine.drawText(
         'Your stock is empty',
-        12,
         WIDTH / 2,
         HEIGHT / 3,
-        A_WHITE,
+        WHITE1,
         'center'
       );
     }
@@ -74,17 +76,17 @@ class StockState implements State {
       if (!stock) return;
 
       drawEngine.drawIcon(icons[product], 3, row + 1);
-      drawEngine.drawText(product, 10, 14, row + 1, A_WHITE);
-      drawEngine.drawText(`Stock: ${stock}`, 10, 1, row + 12, A_WHITE);
-      drawEngine.drawText(`Avg cost: ${avgCost}$`, 10, 1, row + 24, A_WHITE);
+      drawEngine.drawText(product, 14, row + 1, WHITE1);
+      drawEngine.drawText(`Stock: ${stock}`, 1, row + 12, WHITE1);
+      drawEngine.drawText(`Avg cost: ${avgCost}$`, 1, row + 24, WHITE1);
       const reputation =  Math.min(5, 1 + Math.round(4 * (this.gameData.reputation[product] || 0) / 100));
       drawEngine.drawText(
-        `Reputation: ${'★'.repeat(reputation)}${'✩'.repeat(5 - reputation)}`,
-        10, 1, row + 36,
-        A_WHITE
+        `Reputation: ${STAR_FULL.repeat(reputation)}${STAR_EMPTY.repeat(5 - reputation)}`,
+        1, row + 36,
+        WHITE1
       );
 
-      ['–', '+'].map((s,i) => drawEngine.drawButton(
+      ['-', '+'].map((s,i) => drawEngine.drawButton(
         WIDTH - 60 + i*53,
         row + 5,
         this.selection === index ? 'white' : A_WHITE,
@@ -94,8 +96,8 @@ class StockState implements State {
       const price = this.gameData.price[product as ProductType];
       drawEngine.drawText(
         price ? `${price}$` : 'N / A',
-        10, WIDTH - 33, row + 7,
-        A_WHITE,
+        WIDTH - 33, row + 7,
+        WHITE1,
         'center'
       );
       index++;
