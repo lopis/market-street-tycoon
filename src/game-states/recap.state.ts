@@ -86,9 +86,6 @@ class RecapState implements State {
 
       const productsInStock = Object.values(this.gameData.stock).filter(s => !!s).length;
       const recap = this.gameData.history[this.gameData.week];
-      drawEngine.context.save();
-      drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
-      drawEngine.context.clip();
       const recapSales = Object.entries(recap.sales);
       const rowHeight = 12 * 5;
       const scrollSpeed = 20;
@@ -97,7 +94,7 @@ class RecapState implements State {
       if (this.selection > maxSelection) {
         this.selection = Math.round(totalHeight / scrollSpeed);
       }
-      drawEngine.context.translate(0, -this.selection * scrollSpeed);
+      drawEngine.setScrollArea(-this.selection * scrollSpeed);
       recapSales.map((productSales, index) => {
         const row = index * rowHeight + 15;
         const product: ProductType = productSales[0] as ProductType;
@@ -112,12 +109,12 @@ class RecapState implements State {
         const total = sales * price;
         drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 2, row + 24, WHITE1);
         drawEngine.drawText(
-          `Spoiled:  ${this.gameData.spoilProb[product] ? this.spoiled[product] : 'does not spoil'}`,
+          this.gameData.spoilProb[product] ? `Spoiled: ${this.spoiled[product]}` : 'Does not spoil',
           2, row + 36,
           WHITE1
         );
       });
-      drawEngine.context.restore();
+      drawEngine.clearScrollArea();
 
       if (this.curtainPos < 1) {
         // Start, open curtains
@@ -131,13 +128,13 @@ class RecapState implements State {
           WIDTH - 10,
           HEIGHT / 2 - 40,
           A_WHITE,
-          '▲'
+          '<'
         );
         drawEngine.drawButton(
           WIDTH - 10,
           HEIGHT / 2 + 20,
           A_WHITE,
-          '▼'
+          '>'
         );
         const scrollLength = 40 + 20 - height;
         const scrollbarHeight = Math.floor(scrollLength * 2 / productsInStock);

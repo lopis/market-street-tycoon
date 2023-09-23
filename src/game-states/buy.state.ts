@@ -1,5 +1,5 @@
 import { controls } from '@/core/controls';
-import { A_WHITE, BLACK, HEIGHT, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
+import { A_BLACK, A_WHITE, HEIGHT, WHITE1, WIDTH, drawEngine } from '@/core/draw-engine';
 import GameData from '@/core/game-data';
 import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
@@ -70,7 +70,7 @@ class BuyState implements State {
       drawEngine.drawText(
         'Game saved',
         5, HEIGHT - 12,
-        BLACK,
+        A_BLACK,
       );
     }
 

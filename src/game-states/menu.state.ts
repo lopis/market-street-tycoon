@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
@@ -30,16 +30,13 @@ class MenuState implements State {
       drawEngine.drawText(
         `${this.selection == i ? '&': ' '} ${s}`,
         10, 70 + i * 13,
-        this.selection == i ? WHITE1 : WHITE2
+        this.selection == i ? WHITE1 : A_WHITE
       );
     });
   }
 
   renderHelp() {
-    drawEngine.context.save();
-    drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 30);
-    drawEngine.context.clip();
-    drawEngine.context.translate(0, -this.selection * 6);
+    drawEngine.setScrollArea(-this.selection * 6);
     this.renderText([
     // ------------------------
       'You are a merchant in',
@@ -57,7 +54,7 @@ class MenuState implements State {
       'Use the arrow keys and',
       'Enter to play.',
     ]);
-    drawEngine.context.restore();
+    drawEngine.clearScrollArea();
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,

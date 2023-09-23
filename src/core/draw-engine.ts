@@ -41,8 +41,8 @@ const shorterMoney = (money: number) => {
 const hexToRgb = (hex: string) : number[] => {
   // @ts-ignore
   return hex.replace(
-    /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-    (m, r, g, b) => '#' + r + r + g + g + b + b)
+    /^#?([a-f\d])([a-f\d])([a-f\d])([a-f\d])$/i,
+    (m, r, g, b, a) => '#' + r + r + g + g + b + b + a + a)
     .substring(1)
     .match(/.{2}/g)
     .map(x => parseInt(x, 16)
@@ -62,6 +62,10 @@ class DrawEngine {
 
   fps = 60;
   time = 0;
+
+  scrollPosition = 0;
+  scrollLimit = HEIGHT;
+  bitmaps: {[key: string]: ImageBitmap} = {};
 
   constructor() {
     /* global c2d -- the canvas element */
@@ -83,42 +87,54 @@ class DrawEngine {
     this.context.clearRect(0, 0, WIDTH, HEIGHT);
   }
 
-  // drawText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign: 'center' | 'left' | 'right' = 'center') {
-  //   const context = this.context;
+  setScrollArea(scrollPosition: number) {
+    this.context.save();
+    this.context.rect(0, 12, WIDTH, HEIGHT - 30);
+    this.context.clip();
+    this.context.translate(0, scrollPosition);
+    this.scrollPosition = scrollPosition;
+    this.scrollLimit = HEIGHT - 30 - scrollPosition;
+  }
 
-  //   context.font = `${fontSize}px mono, monospaced`;
-  //   context.textAlign = textAlign;
-  //   context.strokeStyle = 'black';
-  //   context.lineWidth = 4;
-  //   context.strokeText(text, x, y);
-  //   context.fillStyle = color;
-  //   context.fillText(text, x, y);
-  // }
+  clearScrollArea() {
+    this.context.restore();
+    this.scrollPosition = 0;
+    this.scrollLimit = HEIGHT;
+  }
+
+  drawText(text: string, x: number, y: number, color = WHITE1, textAlign : CanvasTextAlign = 'left') {
+    const width = 6 * text.length;
+    const id = text+color;
+    const offsetX = textAlign === 'left' ? 0 : textAlign === 'center' ? width / 2 : width;
+    if (this.bitmaps[id]) {
+      this.context.drawImage(this.bitmaps[id], x - offsetX, y);
+    } else {
+      const imageData = new ImageData(width, 5);
+      // this.context.getImageData(x - offsetX, y + offsetY, width, 5);
+      const [r, g, b, a] = hexToRgb(color);
+      text.toUpperCase().split('').forEach((character: string, i) => {
+        // @ts-ignore
+        const letter = character === ' ' ? '0' : tinyFont[character.charCodeAt(0) - 35];
+        const paddedBinary = String(parseInt(letter, 36).toString(2)).padStart(25, '0');
+        paddedBinary.split('').forEach((bit, j) => {
+          if (bit !== '0') {
+            const index = (i * 6 + j % 5 + width * Math.floor(j / 5)) * 4;
+            imageData.data[index] =     r;
+            imageData.data[index + 1] = g;
+            imageData.data[index + 2] = b;
+            imageData.data[index + 3] = a || 255;
+          }
+        });
+      });
+      createImageBitmap(imageData)
+      .then(bitmap => {
+        this.bitmaps[id] = bitmap;
+      });
+    }
+  }
 
   // Adapted from https://github.com/xem/miniPixelFont
   // threshold from 0 to 255
-  drawText(text: string, x: number, y: number, color = WHITE1, textAlign : CanvasTextAlign = 'left') {
-    const width = 6 * text.length;
-    const offsetX = textAlign === 'left' ? 0 : textAlign === 'center' ? width / 2 : width;
-    const imageData = this.context.getImageData(x - offsetX, y, width, 5);
-    const [r, g, b] = hexToRgb(color);
-    text.toUpperCase().split('').forEach((character: string, i) => {
-      // @ts-ignore
-      const letter = character === ' ' ? '0' : tinyFont[character.charCodeAt(0) - 35];
-      const paddedBinary = String(parseInt(letter, 36).toString(2)).padStart(25, '0');
-      paddedBinary.split('').forEach((bit, j) => {
-        if (bit !== '0') {
-          const index = (i * 6 + j % 5 + width * Math.floor(j / 5)) * 4;
-          imageData.data[index] =     imageData.data[index] * 0.25 + r * 0.75;
-          imageData.data[index + 1] = imageData.data[index + 1] * 0.25 + g * 0.75;
-          imageData.data[index + 2] = imageData.data[index + 2] * 0.25 + b * 0.75;
-          imageData.data[index + 3] = 255;
-        }
-      });
-    });
-    this.context.putImageData(imageData, x - offsetX, y);
-  }
-
   drawRealText(text: string, fontSize: number, x: number, y: number, color = 'white', textAlign : CanvasTextAlign = 'left', threshold = 70) {
     const font = `${fontSize}px sans, Droid Sans, Arial, Helvetica`;
 
@@ -316,7 +332,7 @@ class DrawEngine {
     const activeOffset = active ? 1 : 0;
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
-    const width = (text.length + 2) * 6;
+    const width = (text.length + 1) * 6;
     const height = 13;
     this.context.translate(activeOffset, activeOffset);
     this.context.fillRect(x - width/2, y, width, height);

@@ -46,7 +46,7 @@ class StockState implements State {
 
   onUpdate(timeElapsed = 0) {
     drawEngine.drawOverlay(this.gameData.week);
-    drawEngine.drawHeader('Manage stock', this.gameData);
+    drawEngine.drawHeader('Stock', this.gameData);
 
     if (this.isStockEmpty) {
       drawEngine.drawText(
@@ -59,14 +59,9 @@ class StockState implements State {
     }
 
     let index = 0;
-    drawEngine.context.save();
-    drawEngine.context.rect(0, 12, WIDTH, HEIGHT - 12 - 20);
-    drawEngine.context.clip();
     const rowHeight = 12 * 5;
-    drawEngine.context.translate(
-      0,
-      -Math.max(0, Math.min(this.products.length - 2, this.selection)) * rowHeight
-    );
+    const scrollPosition = -Math.max(0, Math.min(this.products.length - 2, this.selection)) * rowHeight;
+    drawEngine.setScrollArea(scrollPosition);
     this.products
     .forEach((product) => {
       const row = index * rowHeight + 15;
@@ -102,7 +97,7 @@ class StockState implements State {
       );
       index++;
     });
-    drawEngine.context.restore();
+    drawEngine.clearScrollArea();
 
     !this.isStockEmpty && drawEngine.drawButton(
       WIDTH - 30,
