@@ -7,7 +7,7 @@ import BuyState from './buy.state';
 import { icons } from '@/core/icons';
 import { MARKET_TIME, MARKET_CUSTOMERS } from './market.state';
 import { trigger } from '@/core/events';
-import { keySound } from '@/core/audio';
+import { KEY_HIGH, keySound } from '@/core/audio';
 
 const SQUARE_FULL = '(';
 const SQUARE_EMPTY = '\'';
@@ -160,7 +160,7 @@ class RecapState implements State {
         trigger('restart');
       }
       this.gameData.week++;
-      keySound(-2);
+      keySound(KEY_HIGH);
       this.next();
     }
   }

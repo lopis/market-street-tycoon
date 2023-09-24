@@ -27,12 +27,17 @@
 //   return Math.sin(i*0.0006*Math.sin(0.009*i)+Math.sin(i/400))*(n-i)/n*0.5;
 // }
 
+let soundDisabled = false;
 let a: AudioContext;
 let b: AudioContext;
 let noise: AudioBufferSourceNode | null;
 const musicVolume = 0.3;
 const noiseVolume = 0.3;
 const duration = 0.25;
+
+export const KEY_LOW = 5;
+export const KEY_DEFAULT = 2;
+export const KEY_HIGH = -2;
 
 // Sound player
 // export const playSound = (fn: (i: number) => number | null) => {
@@ -69,7 +74,7 @@ const playNote = (actx: AudioContext, note: number, time: number): OscillatorNod
   osc.type = 'square';
   osc.connect(gain);
   gain.connect(bandpass).connect(actx.destination);
-  gain.gain.setValueAtTime(0.001, time);
+  gain.gain.setValueAtTime(0.0001, time);
   const gap = 0.8;
   gain.gain.linearRampToValueAtTime(musicVolume, time + duration*gap);
   gain.gain.setValueAtTime(musicVolume, time + duration*gap);
@@ -169,6 +174,7 @@ export const stopMarketMusic = () => {
 };
 
 export const startMarketMusic = (repeat = false) => {
+  if (soundDisabled) return;
   a = new AudioContext();
   startTime = a.currentTime;
   currentNoteIndex = 0;
@@ -177,7 +183,9 @@ export const startMarketMusic = (repeat = false) => {
   scheduleNextNote(repeat);
 };
 
-export const keySound = (note: number) => {
+export const keySound = (note = KEY_DEFAULT) => {
+  if (soundDisabled) return;
+
   if (!b) {
     b = new AudioContext();
   }
@@ -185,6 +193,10 @@ export const keySound = (note: number) => {
   const osc = playNote(b, note, time);
   osc.start(time);
   osc.stop(time + duration);
+};
+
+export const disableSound = () => {
+  soundDisabled = true;
 };
 
 // export const toggleSoundEffects = () => {

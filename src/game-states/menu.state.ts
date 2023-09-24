@@ -1,9 +1,10 @@
 import { State } from '@/core/state';
-import { A_WHITE, HEIGHT, WHITE1, WHITE2, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WHITE1, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
 import { LOCALSTORAGE_KEY } from '@/core/game-data';
+import { disableSound, keySound } from '@/core/audio';
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -17,6 +18,28 @@ class MenuState implements State {
   selection = 0;
   showHelp = false;
   showAbout = false;
+  showSoundOption = true;
+
+  renderSoundOption() {
+    drawEngine.drawText(
+      'Play with sound?',
+      20,
+      46,
+      A_WHITE,
+    );
+    drawEngine.drawText(
+      this.selection == 0 ? '& yes' : '  yes',
+      20,
+      58,
+      this.selection == 0 ? WHITE1 : A_WHITE,
+    );
+    drawEngine.drawText(
+      this.selection == 1 ? '& no' : '  no',
+      20,
+      68,
+      this.selection == 1 ? WHITE1 : A_WHITE,
+    );
+  }
 
   renderMenu() {
     ['𝕄𝕒𝕣𝕜𝕖𝕥', '𝕊𝕥𝕣𝕖𝕖𝕥', '𝕋𝕪𝕔𝕠𝕠𝕟'].map((s, i) => {
@@ -86,7 +109,7 @@ class MenuState implements State {
       drawEngine.drawText(
         line,
         10, 8 + i * 8,
-        WHITE2,
+        WHITE1,
         'left'
       );
     });
@@ -95,7 +118,8 @@ class MenuState implements State {
   onUpdate() {
     drawEngine.drawOverlay(1);
 
-    this.showAbout ? this.renderAbout()
+    this.showSoundOption ? this.renderSoundOption()
+    : this.showAbout ? this.renderAbout()
     : this.showHelp ? this.renderHelp()
     : this.renderMenu();
 
@@ -103,10 +127,19 @@ class MenuState implements State {
   }
 
   updateControls() {
-    controls.updateSelection(this, this.showAbout || this.showHelp ? 100 : 4);
+    controls.updateSelection(
+      this,
+      this.showAbout || this.showHelp ? 100 : this.showSoundOption ? 1 : 4
+    );
 
     if (controls.isConfirm && !controls.previousState.isConfirm) {
-      if (this.showAbout || this.showHelp) {
+      if (this.showSoundOption) {
+        this.showSoundOption = false;
+        if (this.selection === 1) {
+          disableSound();
+        }
+        this.selection = 0;
+      } else if (this.showAbout || this.showHelp) {
         this.selection = 0;
         this.showAbout = false;
         this.showHelp = false;
@@ -121,6 +154,7 @@ class MenuState implements State {
         this.selection = 0;
         this.showAbout = true;
       }
+      keySound();
     }
   }
 }

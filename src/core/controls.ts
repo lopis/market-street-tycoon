@@ -125,11 +125,11 @@ class Controls {
   updateSelection(state: SelectableState, maxValue: number) {
     if (this.isUp && !this.previousState.isUp && state.selection > 0) {
       state.selection--;
-      keySound(2);
+      keySound();
     }
     if (this.isDown && !this.previousState.isDown && state.selection < maxValue) {
       state.selection++;
-      keySound(2);
+      keySound();
     }
   }
 }

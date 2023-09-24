@@ -10,17 +10,17 @@ export const WIDTH = 160;
 export const RED1 = '#c3472c',
 RED2 = '#631909',
 WHITE1 = '#ffeae0',
-WHITE2 = '#f7cebd',
-BROWN1 = '#b77e62',
-BROWN2 = '#6d412e',
-BLUE = '#1155bb',
-PURPLE = '#4621ac',
-GREEN = '#17812e',
+WHITE2 = '#d5ad9b',
+BROWN1 = '#de7c4b',
+BROWN2 = '#8f3e15',
+BLUE = '#004fc5',
+PURPLE = '#2f00b1',
+GREEN = '#00771a',
 YELLOW = '#ea0',
-GRAY = '#7d736e',
+GRAY = '#807b78',
 A_WHITE = '#FFFFFF88',
 A_BLACK = '#00000088',
-BLACK = '#322722';
+BLACK = '#251108';
 
 export const PALETTE = [
   '533', // black
@@ -247,7 +247,7 @@ class DrawEngine {
         this.drawBrick(col * width - offset, row * height - 5, width, height);
       }
     }
-    this.context.fillStyle = '#40312a';
+    this.context.fillStyle = BLACK;
     this.context.fillRect(0, 90, WIDTH, 54);
   }
 
@@ -296,11 +296,11 @@ class DrawEngine {
     // red and white cloth
     for (let i = 0; i < 7 ; i++) {
       this.context.beginPath();
-      this.context.fillStyle = i % 2 ? BROWN1 : RED2;
+      this.context.fillStyle = i % 2 ? WHITE2 : RED2;
       this.drawCircle(32 + i * 16, 32, 8);
       this.context.fill();
       this.context.beginPath();
-      this.context.fillStyle = i % 2 ? WHITE2 : RED1;
+      this.context.fillStyle = i % 2 ? WHITE1 : RED1;
       this.drawCircle(32 + i * 16, 30, 8);
       this.context.rect(24 + i * 16, 22, 16, 8);
       this.context.fill();
@@ -408,9 +408,9 @@ class DrawEngine {
       const price = data.price[product] || 0;
       return total + price * Math.floor(sales);
     }, 0);
-    this.context.fillStyle = WHITE2;
-    this.context.fillRect(margin, margin, width, 12);
-    this.context.fillRect(WIDTH - margin - width, margin, width, 12);
+    this.context.fillStyle = WHITE1;
+    this.context.fillRect(margin, margin, width, 5 + margin * 2);
+    this.context.fillRect(WIDTH - margin - width, margin, width, 5 + margin * 2);
     this.drawText(`Week ${data.week}`, margin + 2, margin + 3, BLACK);
     this.drawText(`${data.money + income}$`, WIDTH - margin - 2, margin + 3, BLACK, 'right');
   }
@@ -437,15 +437,15 @@ class DrawEngine {
   }
 
   drawClock(time: number) {
-this.context.beginPath();
-this.context.fillStyle = WHITE2;
-this.drawCircle(WIDTH / 2, 8, 7);
-this.context.fill();
-const angle = 2 * Math.PI * time / MARKET_TIME - Math.PI/2;
-const xc = WIDTH / 2;
-const yc = 8;
-const r = 6;
-this.drawLine(xc, yc, xc + r * Math.cos(angle), yc + r * Math.sin(angle), BLACK);
+    this.context.beginPath();
+    this.context.fillStyle = WHITE1;
+    this.drawCircle(WIDTH / 2, 8, 7);
+    this.context.fill();
+    const angle = 2 * Math.PI * time / MARKET_TIME - Math.PI/2;
+    const xc = WIDTH / 2;
+    const yc = 8;
+    const r = 6;
+    this.drawLine(xc, yc, xc + r * Math.cos(angle), yc + r * Math.sin(angle), BLACK);
   }
 
   drawFPS() {

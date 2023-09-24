@@ -5,7 +5,7 @@ import { State } from '@/core/state';
 import { playStateMachine } from '@/game-state-machine';
 import StockState from './stock.state';
 import { icons } from '@/core/icons';
-import { keySound } from '@/core/audio';
+import { KEY_HIGH, KEY_LOW, keySound } from '@/core/audio';
 
 class BuyState implements State {
   gameData: GameData;
@@ -25,8 +25,8 @@ class BuyState implements State {
 
   onEnter() {
     this.gameData.removeSuppliers();
-    this.gameData.save();
     if (!this.isGoingBack) {
+      this.gameData.save();
       this.gameData.createSupplier();
     }
   }
@@ -66,7 +66,12 @@ class BuyState implements State {
       'next',
     );
 
-    if (this.gameData.week > 1 && this.totalTime > 500 && this.totalTime < 3000) {
+    if (
+      this.gameData.week > 1
+      && !this.isGoingBack
+      && this.totalTime > 500
+      && this.totalTime < 3000
+    ) {
       drawEngine.drawText(
         'Game saved',
         5, HEIGHT - 12,
@@ -86,9 +91,9 @@ class BuyState implements State {
         supplier.stock > 0
         && supplier.price <= this.gameData.money
       ) {
-        keySound(-2);
+        keySound(KEY_HIGH);
       } else {
-        keySound(5);
+        keySound(KEY_LOW);
         return;
       }
       this.gameData.money -= supplier.price;
@@ -115,7 +120,7 @@ class BuyState implements State {
         this.active = -1;
       }, 100);
       if (this.selection == this.gameData.suppliers.length) {
-        keySound(-2);
+        keySound(KEY_HIGH);
         this.next();
       }
       this.buyProduct();

@@ -6,7 +6,7 @@ import { playStateMachine } from '@/game-state-machine';
 import MarketState from './market.state';
 import BuyState from './buy.state';
 import { icons } from '@/core/icons';
-import { keySound } from '@/core/audio';
+import { KEY_DEFAULT, KEY_HIGH, keySound } from '@/core/audio';
 
 const STAR_FULL = '*';
 const STAR_EMPTY = ')';
@@ -90,7 +90,7 @@ class StockState implements State {
       ));
       const price = this.gameData.price[product as ProductType];
       drawEngine.drawText(
-        price ? `${price}$` : 'N / A',
+        price ? `${price}$` : 'N/A',
         WIDTH - 33, row + 7,
         WHITE1,
         'center'
@@ -128,10 +128,10 @@ class StockState implements State {
     const isRight = controls.isRight && !controls.previousState.isRight;
     if((isLeft || isRight)) {
       if (this.selection < this.products.length) {
-        keySound(isLeft ? 2 : -2);
+        keySound(isLeft ? KEY_DEFAULT : KEY_HIGH);
         this.updatePrice(isLeft);
       } else {
-        keySound(2);
+        keySound();
         this.backSelected = !this.backSelected;
       }
     }
@@ -147,7 +147,7 @@ class StockState implements State {
           }, 1200);
         }
       }
-      keySound(-2);
+      keySound(KEY_HIGH);
     }
   }
 
