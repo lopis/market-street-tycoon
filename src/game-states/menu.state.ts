@@ -1,5 +1,5 @@
 import { State } from '@/core/state';
-import { A_WHITE, HEIGHT, WHITE1, WHITE1, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
+import { A_WHITE, HEIGHT, WHITE1, WIDTH, YELLOW, drawEngine } from '@/core/draw-engine';
 import { controls } from '@/core/controls';
 import { gameStateMachine } from '@/game-state-machine';
 import { GameState } from './game.state';
