@@ -153,11 +153,12 @@ class GameData {
 
     if (isBroke) {
       this.suppliers = this.suppliers.filter(supplier => supplier.productName != 'wood');
+      const stock = Math.min(60, Math.ceil(this.money / 2));
       this.suppliers.push({
         productName: 'wood',
         supplierName: nextName(),
-        price: this.money,
-        stock: Math.ceil(this.money / 2),
+        price: stock * 2,
+        stock: stock,
       });
     }
 

@@ -104,10 +104,14 @@ class RecapState implements State {
         const demandIcons = 10;
         const d = Math.round(Math.min(demandIcons, demandIcons * (recap.demand[product] || 0)));
         drawEngine.drawText(`${product}`, 12, row, WHITE1);
-        drawEngine.drawText(`Demand:  ${SQUARE_FULL.repeat(d)}${SQUARE_EMPTY.repeat(demandIcons - d)}`, 2, row + 12, WHITE1);
+        drawEngine.drawText(`Demand: ${SQUARE_FULL.repeat(d)}${SQUARE_EMPTY.repeat(demandIcons - d)}`, 2, row + 12, WHITE1);
         const price = (this.gameData.price[product] || 0);
         const total = sales * price;
-        drawEngine.drawText(`Sales:  ${sales} x ${price}$ = ${total}$`, 2, row + 24, WHITE1);
+        const salesLine = `${sales} x ${price}$ = ${total}$`;
+        drawEngine.drawText(
+          salesLine.length > 16 ? salesLine :  `Sales: ${salesLine}`,
+          2, row + 24, WHITE1
+        );
         drawEngine.drawText(
           this.gameData.spoilProb[product] ? `Spoiled: ${this.spoiled[product]}` : 'Does not spoil',
           2, row + 36,

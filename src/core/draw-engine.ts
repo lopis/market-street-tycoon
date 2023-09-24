@@ -370,7 +370,7 @@ class DrawEngine {
     });
     s.forEach(([type, amount], i) => {
       // @ts-ignore -- type is a valid key
-      const finalStock = Math.ceil(amount - productSales[type]);
+      const finalStock = Math.min(200, Math.ceil(amount - productSales[type]));
       // @ts-ignore
       const icon : Icon = icons[type];
       const perRow = Math.floor(27 / icon.padding);
@@ -387,15 +387,15 @@ class DrawEngine {
           90 - (Math.floor((j % maxPerBox) / perRow)) * (icon.padding-1) - icon.y - productLevel * icon.padding,
         );
         // level separator
-        if (j && j % maxPerBox == 0) {
-          this.context.fillStyle = BROWN1;
-          this.context.fillRect(
-            37 + boxNumber * 30 + (j % 2) * 2,
-            74 - productLevel * icon.padding + icon.y,
-            26 - 3,
-            23
-          );
-        }
+        // if (j && j % maxPerBox == 0) {
+        //   this.context.fillStyle = BROWN1;
+        //   this.context.fillRect(
+        //     37 + boxNumber * 30 + (j % 2) * 2,
+        //     74 - productLevel * icon.padding + icon.y,
+        //     26 - 3,
+        //     23
+        //   );
+        // }
       }
     });
   }
