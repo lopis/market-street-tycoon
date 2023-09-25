@@ -103,6 +103,7 @@ class DrawEngine {
   }
 
   drawText(text: string, x: number, y: number, color = WHITE1, textAlign : CanvasTextAlign = 'left') {
+    if (!text) text = ' ';
     const width = 6 * text.length;
     const id = text+color;
     const offsetX = textAlign === 'left' ? 0 : textAlign === 'center' ? width / 2 : width;

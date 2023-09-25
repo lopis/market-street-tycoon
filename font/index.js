@@ -90,7 +90,10 @@ Jimp.read('./font.png', function(readError, file) {
       console.log('Injecting into', outputFile);
       fs.writeFile(
         outputFile,
-        data.replace(/\/\* font-start \*\/.*\/\* font-end \*\//, `'${fontString}'`),
+        data.replace(
+          /\/\* font-start \*\/.*\/\* font-end \*\//,
+          `/* font-start */'${fontString}'/* font-end */`
+        ),
         writeError => {
         if (writeError) {
           throw writeError;

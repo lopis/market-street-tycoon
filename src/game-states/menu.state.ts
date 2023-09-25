@@ -59,7 +59,7 @@ class MenuState implements State {
   }
 
   renderHelp() {
-    drawEngine.setScrollArea(-this.selection * 6);
+    // drawEngine.setScrollArea(-this.selection * 6);
     this.renderText([
     // ------------------------
       'You are a merchant in',
@@ -77,7 +77,7 @@ class MenuState implements State {
       'Use the arrow keys and',
       'Enter to play.',
     ]);
-    drawEngine.clearScrollArea();
+    // drawEngine.clearScrollArea();
     drawEngine.drawButton(
       WIDTH / 2,
       HEIGHT - 15,
@@ -94,7 +94,7 @@ class MenuState implements State {
       'github.com/lopis',
       'js13kgames.com',
       '',
-      '♥',
+      '%',
     ]);
     drawEngine.drawButton(
       WIDTH / 2,
@@ -108,7 +108,8 @@ class MenuState implements State {
     lines.map((line, i) => {
       drawEngine.drawText(
         line,
-        10, 8 + i * 8,
+        10,
+        15 + i * 8,
         WHITE1,
         'left'
       );
