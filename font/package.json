@@ -1,0 +1,9 @@
+{
+  "name": "tiny-font-generator",
+  "version": "1.0.0",
+  "description": "Tiny Font Generator",
+  "main": "index.js",
+  "author": "lopis",
+  "license": "MIT",
+  "type": "module"
+}
