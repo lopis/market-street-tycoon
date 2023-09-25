@@ -2,18 +2,21 @@
 
 ## A js13kgames game
 
+![screenshot from the game](thumb_small.png)
+
 Become the most successful merchant in the kingdom!
 
-Market Street Tycoon is a game about building up a successful business in mediaeval Europe, starting as a small street stand and evolving by increasing product selection, improving the stand location, and maybe upgrading to a physical shop.
+Market Street Tycoon is a game about building up a successful business in mediaeval Europe, selling a variety of products for the best price. The more you sell your products, the more your reputation increases. This unlocks new possibilities, and your costumers are more willing to pay you more for your quality goods. There are 9 products to unlock: 🍎 🍞 🪵 🥚 🥧 🏺 💎 🌶.
 
-🚧 Under construction
+Game works on desktop or mobile. Use WASD or arrow keys and Enter, or gamepad. On mobile, use the virtual gamepad.
+
+[Play Game](https://lopis.github.io/market-street-tycoon/dist/)
 
 ## Development
 
 Install dependencies
 
 ```sh
-sudo apt install default-jre # Needed to run roadroller
 yarn
 ```
 
@@ -23,6 +26,15 @@ Run development
 yarn dev
 ```
 
+Build a new version
+
+```sh
+sudo apt install default-jre # Needed to run roadroller
+yarn build-with-best-roadroller
+```
+
 ## Credits
 
-Music adapted from https://musescore.com/user/26822/scores/44875
+Music adapted from <https://musescore.com/user/26822/scores/44875>
+
+Roadroller setup by [Rob Louie](@roblouie)
