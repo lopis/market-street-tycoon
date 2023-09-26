@@ -10,7 +10,9 @@ Market Street Tycoon is a game about building up a successful business in mediae
 
 Game works on desktop or mobile. Use WASD or arrow keys and Enter, or gamepad. On mobile, use the virtual gamepad.
 
-[Play Game](https://lopis.github.io/market-street-tycoon/dist/)
+🎮 [Play Game](https://lopis.github.io/market-street-tycoon/dist/)
+
+📃 [A tiny pixel art game using no images](https://dev.to/mrlopis/a-tiny-pixel-art-game-using-no-images-49df)
 
 ## Development
 
