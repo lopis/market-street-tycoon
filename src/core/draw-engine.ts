@@ -162,8 +162,15 @@ class DrawEngine {
     }
   }
 
+  /**
+   * Draws a pixelated line from (x0,y0) to (x1,y1).
+   * This is used because the canvas is only able to draw
+   * anti-aliased lines which don't fit the pixel-art aesthetics.
+   * It is terribly inneficient, as it performs a rect() for
+   * each pixel of the line.
+   */
   drawLine(x0: number, y0: number, x1: number, y1: number, color: string) {
-    // It's necessary to start from rounded coordinated
+    // It's necessary to start from rounded coordinates
     let x = Math.round(x0);
     let y = Math.round(y0);
     x1 = Math.round(x1);
@@ -173,6 +180,7 @@ class DrawEngine {
     let dx = x1 - x0;
     let dy = y1 - y0;
     let dmax = Math.max(Math.abs(dx), Math.abs(dy));
+
     // Either dx or dy will equal 1
     // and the other will be less than 1
     dx = dx / dmax;
@@ -181,7 +189,7 @@ class DrawEngine {
     const points = [ ];
     this.context.fillStyle = color;
     while(dmax--) {
-      // The points won't have whole coordinated;
+      // The points won't have integer coordinates;
       // We'll round them later.
       points.push([x, y]);
       x += dx;
